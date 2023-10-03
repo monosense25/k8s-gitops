@@ -1,0 +1,454 @@
+---
+clusterName: &cluster k8s
+
+clusterPodNets:
+  - 10.244.0.0/16
+clusterSvcNets:
+  - 10.245.0.0/16
+
+talosVersion: v1.5.3
+kubernetesVersion: 1.28.2
+endpoint: https://k8s.${domainName}:6443
+
+additionalApiServerCertSans:
+  - ${clusterEndpointIP}
+
+additionalMachineCertSans:
+  - ${clusterEndpointIP}
+  - k8s.${domainName}
+
+cniConfig:
+  name: none
+
+nodes:
+  # ThinkCentre M910Q
+  # i7 7700T / 32GB / 256GB SSD OS / 1x 1GbE
+  - hostname: k8s-m0.${domainName}
+    ipAddress: 172.16.13.11
+    installDiskSelector: /dev/sda
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.14.5
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: 00:30:93:10:5c:f1
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 1613
+            dhcp: true
+            addresses:
+              - 172.16.13.11/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.10/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.10/24
+            mtu: 1500
+    nodeLabels: &masterLabels
+      topology.kubernetes.io/region: *cluster
+      topology.kubernetes.io/zone: m
+
+  - hostname: m1.k8s.${domainName}
+    ipAddress: 10.0.0.11
+    installDiskSelector:
+      serial: H280463005RJRV2C6
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: 00:30:93:10:5c:f6
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.11/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+            vip:
+              ip: ${clusterEndpointIP}
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.11/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.11/24
+            mtu: 1500
+    nodeLabels: *masterLabels
+
+  - hostname: m2.k8s.${domainName}
+    ipAddress: 10.0.0.12
+    installDiskSelector:
+      serial: C070234007KJRT9AZ
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: 00:30:93:10:5c:ee
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.12/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+            vip:
+              ip: ${clusterEndpointIP}
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.12/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.12/24
+            mtu: 1500
+    nodeLabels: *masterLabels
+
+  # ThinkCentre M720Q
+  # i5 8500 / 64GB / 256GB SSD OS / 1x 2TB NVME / 2x 10GbE Mellanox ConnectX3-Pro
+  - hostname: w0.k8s.${domainName}
+    ipAddress: 10.0.0.20
+    installDiskSelector:
+      serial: H281495002CJRVGDX
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: cc:2d:b7:0b:0c:40
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.20/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.20/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.20/24
+            mtu: 1500
+    nodeLabels: &workerLabels
+      node-role.kubernetes.io/worker: worker
+      topology.kubernetes.io/region: *cluster
+      topology.kubernetes.io/zone: w
+
+  - hostname: w1.k8s.${domainName}
+    ipAddress: 10.0.0.21
+    installDiskSelector:
+      serial: C070173002EJRVGAW
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: cc:2d:b7:07:c0:00
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.21/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.21/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.21/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+
+  - hostname: w2.k8s.${domainName}
+    ipAddress: 10.0.0.22
+    installDiskSelector:
+      serial: C07843600H7JRVGA8
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: cc:2d:b7:02:b9:b5
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.22/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.22/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.22/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+
+  # ThinkCentre M920X
+  # i7 8700T / 64GB / 512GB NVME OS / 1x 2TB NVME / 2x 10GbE Mellanox ConnectX3-Pro
+  - hostname: w0.k8s.${domainName}
+    ipAddress: 10.0.0.20
+    installDiskSelector:
+      serial: H281495002CJRVGDX
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: cc:2d:b7:0b:0c:40
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.20/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.20/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.20/24
+            mtu: 1500
+    nodeLabels: &workerLabels
+      node-role.kubernetes.io/worker: worker
+      topology.kubernetes.io/region: *cluster
+      topology.kubernetes.io/zone: w
+
+  - hostname: w1.k8s.${domainName}
+    ipAddress: 10.0.0.21
+    installDiskSelector:
+      serial: C070173002EJRVGAW
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 10.255.253.1
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: 802.3ad
+          deviceSelectors:
+            - hardwareAddr: cc:2d:b7:07:c0:00
+              driver: atlantic
+        dhcp: false
+        mtu: 9000
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 10.0.0.21/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 10.0.0.1
+          - vlanId: 12
+            dhcp: false
+            addresses:
+              - 10.0.2.21/24
+            mtu: 1500
+          - vlanId: 13
+            dhcp: false
+            addresses:
+              - 10.0.3.21/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+
+controlPlane:
+  patches:
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - kube-system
+  inlinePatch:
+    cluster:
+      allowSchedulingOnMasters: true
+      proxy:
+        disabled: true
+      etcd:
+        extraArgs:
+          listen-metrics-urls: http://0.0.0.0:2381
+        advertisedSubnets:
+          - 10.0.0.0/24
+      controllerManager:
+        extraArgs:
+          bind-address: 0.0.0.0
+      scheduler:
+        extraArgs:
+          bind-address: 0.0.0.0
+      apiServer:
+        admissionControl: null
+      discovery:
+        registries:
+          service:
+            disabled: true
+    machine: &machine
+      install:
+        image: ghcr.io/buroa/installer:v1.5.3
+        extensions:
+          - image: ghcr.io/siderolabs/i915-ucode:20230804
+          - image: ghcr.io/siderolabs/intel-ucode:20230808
+        legacyBIOSSupport: true
+        extraKernelArgs:
+          - talos.logging.kernel=udp://vector.${domainName}:6001/
+      features:
+        kubePrism:
+          enabled: true
+          port: 7445
+      logging:
+        destinations:
+          - endpoint: udp://vector.${domainName}:6002/
+            format: json_lines
+      sysfs:
+        devices.system.cpu.intel_pstate.no_turbo: 1
+        devices.system.cpu.cpu0.cpufreq.scaling_governor: powersave
+      sysctls:
+        fs.inotify.max_user_watches: 1048576
+        fs.inotify.max_user_instances: 8192
+        kernel.randomize_va_space: 0
+        net.core.netdev_max_backlog: 30000
+        net.core.rmem_max: 67108864
+        net.core.wmem_max: 67108864
+        net.ipv4.tcp_rmem: 4096 87380 33554432
+        net.ipv4.tcp_wmem: 4096 65536 33554432
+        net.ipv4.tcp_tw_reuse: 1
+        net.ipv4.tcp_window_scaling: 1
+      udev:
+        rules:
+          - ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
+      network:
+        extraHostEntries:
+          - ip: ${clusterEndpointIP}
+            aliases:
+              - k8s.${domainName}
+          - ip: 192.168.0.1
+            aliases:
+              - unifi.${domainName}
+          - ip: 10.0.0.5
+            aliases:
+              - nas.${domainName}
+          - ip: 10.0.0.6
+            aliases:
+              - ups.${domainName}
+          - ip: 10.0.0.7
+            aliases:
+              - pdu.${domainName}
+          - ip: 10.0.3.4
+            aliases:
+              - vector.${domainName}
+      time:
+        disabled: false
+        servers:
+          - time.cloudflare.com
+      kubelet:
+        extraArgs:
+          feature-gates: GracefulNodeShutdown=true
+          rotate-server-certificates: true
+        nodeIP:
+          validSubnets:
+            - 10.0.0.0/24
+      files:
+        - content: |
+            [plugins."io.containerd.grpc.v1.cri"]
+              enable_unprivileged_ports = true
+              enable_unprivileged_icmp = true
+          path: /etc/cri/conf.d/20-customization.part
+          op: create
+
+worker:
+  inlinePatch:
+    machine:
+      <<: *machine
