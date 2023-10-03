@@ -1,5 +1,5 @@
 ---
-clusterName: &cluster k8s
+clusterName: &cluster cluster0
 
 clusterPodNets:
   - 10.244.0.0/16
@@ -8,7 +8,7 @@ clusterSvcNets:
 
 talosVersion: v1.5.3
 kubernetesVersion: 1.28.2
-endpoint: https://k8s.${domainName}:6443
+endpoint: https://.${domainName}:6443
 
 additionalApiServerCertSans:
   - ${clusterEndpointIP}
