@@ -2,7 +2,7 @@
 
 <img src="https://camo.githubusercontent.com/5b298bf6b0596795602bd771c5bddbb963e83e0f/68747470733a2f2f692e696d6775722e636f6d2f7031527a586a512e706e67" align="center" width="144px" height="144px"/>
 
-### My _geeked_ homelab k8s cluster ☸
+### Homelab k8s cluster ☸
 
 _... automated via [Flux](https://fluxcd.io), [Renovate](https://github.com/renovatebot/renovate) and [GitHub Actions](https://github.com/features/actions)_ 🤖
 
@@ -11,12 +11,9 @@ _... automated via [Flux](https://fluxcd.io), [Renovate](https://github.com/reno
 <div align="center">
 
 [![Discord](https://img.shields.io/discord/673534664354430999?style=for-the-badge&label&logo=discord&logoColor=white&color=blue)](https://discord.gg/k8s-at-home)
+[![Talos](https://img.shields.io/badge/v1.5.3-blue?style=for-the-badge&logo=data:image/svg%2bxml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMy4wLjMsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmlld0JveD0iMCAwIDIwMy43NCAyMjYuMDUiPjxkZWZzPjxzdHlsZT4uY2xzLTF7ZmlsbDp1cmwoI2xpbmVhci1ncmFkaWVudCk7fS5jbHMtMntmaWxsOnVybCgjbGluZWFyLWdyYWRpZW50LTIpO30uY2xzLTN7ZmlsbDp1cmwoI2xpbmVhci1ncmFkaWVudC0zKTt9LmNscy00e2ZpbGw6dXJsKCNsaW5lYXItZ3JhZGllbnQtNCk7fS5jbHMtNXtmaWxsOnVybCgjbGluZWFyLWdyYWRpZW50LTUpO308L3N0eWxlPjxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50IiB4MT0iMTAxLjg1IiB5MT0iLTE1LjE5IiB4Mj0iMTAxLjg1IiB5Mj0iMjM3LjgxIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZmZkMjAwIi8+PHN0b3Agb2Zmc2V0PSIwLjA2IiBzdG9wLWNvbG9yPSIjZmZiNTAwIi8+PHN0b3Agb2Zmc2V0PSIwLjE0IiBzdG9wLWNvbG9yPSIjZmY4YzAwIi8+PHN0b3Agb2Zmc2V0PSIwLjIxIiBzdG9wLWNvbG9yPSIjZmY3MzAwIi8+PHN0b3Agb2Zmc2V0PSIwLjI2IiBzdG9wLWNvbG9yPSIjZmY2YTAwIi8+PHN0b3Agb2Zmc2V0PSIwLjMzIiBzdG9wLWNvbG9yPSIjZmM0ZjBlIi8+PHN0b3Agb2Zmc2V0PSIwLjQzIiBzdG9wLWNvbG9yPSIjZjkyZjFlIi8+PHN0b3Agb2Zmc2V0PSIwLjUxIiBzdG9wLWNvbG9yPSIjZjgxYjI3Ii8+PHN0b3Agb2Zmc2V0PSIwLjU3IiBzdG9wLWNvbG9yPSIjZjcxNDJiIi8+PHN0b3Agb2Zmc2V0PSIwLjY4IiBzdG9wLWNvbG9yPSIjZGYxNjJlIi8+PHN0b3Agb2Zmc2V0PSIwLjc5IiBzdG9wLWNvbG9yPSIjYWYxYTM4Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNGIyMTRjIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0yIiB4MT0iMjQuODQiIHkxPSItMTUuMTkiIHgyPSIyNC44NCIgeTI9IjIzNy44MSIgeGxpbms6aHJlZj0iI2xpbmVhci1ncmFkaWVudCIvPjxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTMiIHgxPSIxNzguOSIgeTE9Ii0xNS4xOSIgeDI9IjE3OC45IiB5Mj0iMjM3LjgxIiB4bGluazpocmVmPSIjbGluZWFyLWdyYWRpZW50Ii8+PGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQtNCIgeDE9IjE0NS4wNiIgeTE9Ii0xNS4xOSIgeDI9IjE0NS4wNiIgeTI9IjIzNy44MSIgeGxpbms6aHJlZj0iI2xpbmVhci1ncmFkaWVudCIvPjxsaW5lYXJHcmFkaWVudCBpZD0ibGluZWFyLWdyYWRpZW50LTUiIHgxPSI1OC42NCIgeTE9Ii0xNS4xOSIgeDI9IjU4LjY0IiB5Mj0iMjM3LjgxIiB4bGluazpocmVmPSIjbGluZWFyLWdyYWRpZW50Ii8+PC9kZWZzPjxnIGlkPSJMYXllcl8yIiBkYXRhLW5hbWU9IkxheWVyIDIiPjxnIGlkPSJMYXllcl8xLTIiIGRhdGEtbmFtZT0iTGF5ZXIgMSI+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMTAxLjg5LDIyNi4wNWMyLjg1LDAsNS42Ny0uMTUsOC40Ni0uMzVWLjM1Yy0yLjgtLjIxLTUuNjItLjM1LTguNDgtLjM1cy01LjcuMTQtOC41Mi4zNVYyMjUuNjljMi44MS4yMSw1LjY0LjM1LDguNS4zNloiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik0xMS41Niw1MC45LDkuMTIsNDguNDdBMTEyLjgyLDExMi44MiwwLDAsMCwuMiw2My42MWMyOS40MiwyOS44OSwzMi41Miw0NC4zMSwzMi40OCw0OS4xNEMzMi41NywxMjUsMTcuNTgsMTQ0LjIxLDAsMTYyYTExMy42OSwxMTMuNjksMCwwLDAsOC44NCwxNS4xNWMxLTEsMS45NS0xLjkyLDIuOTItMi45LDI1LjM3LTI1LjU0LDM3Ljc3LTQ1LjYxLDM3LjkyLTYxLjM4UzM3LjM2LDc3LDExLjU2LDUwLjlaIi8+PHBhdGggY2xhc3M9ImNscy0zIiBkPSJNMTkyLDE3NC4yOWwyLjkyLDIuOUExMTMuNjksMTEzLjY5LDAsMCwwLDIwMy43NCwxNjJjLTE3LjU3LTE3LjgzLTMyLjU2LTM3LjA5LTMyLjY4LTQ5LjI5LS4xMS0xMS45LDE0Ljc5LTMxLjE1LDMyLjQ2LTQ5LjE4YTExMi44OCwxMTIuODgsMCwwLDAtOC45LTE1LjFsLTIuNDQsMi40M2MtMjUuOCwyNi4wNS0zOC4yNyw0Ni4zNC0zOC4xMiw2MlMxNjYuNjEsMTQ4Ljc1LDE5MiwxNzQuMjlaIi8+PHBhdGggY2xhc3M9ImNscy00IiBkPSJNMTQwLjY4LDExMi44M2MwLTIyLDkuODEtNTguNTgsMjQuOTItOTMuMTVBMTEzLDExMywwLDAsMCwxNTAuNDUsMTFjLTE2LjU0LDM3LjI3LTI2Ljc4LDc2LjkxLTI2Ljc4LDEwMS44NywwLDI0LjE1LDExLjA5LDY0LjIzLDI3LjkzLDEwMS43YTExMywxMTMsMCwwLDAsMTQuODQtOC43N0MxNTAuODUsMTcwLjczLDE0MC42OCwxMzQuMDcsMTQwLjY4LDExMi44M1oiLz48cGF0aCBjbGFzcz0iY2xzLTUiIGQ9Ik04MCwxMTIuODNDODAsODcuNzQsNjkuMzUsNDcuODgsNTMsMTEuMDdhMTEyLjc2LDExMi43NiwwLDAsMC0xNC45Myw4LjY0QzUzLjIxLDU0LjI2LDYzLDkwLjg1LDYzLDExMi44M2MwLDIxLjIzLTEwLjE3LDU3Ljg4LTI1Ljc2LDkyLjkxYTExMy42NiwxMTMuNjYsMCwwLDAsMTQuODQsOC43N0M2OC45NCwxNzcuMDUsODAsMTM3LDgwLDExMi44M1oiLz48L2c+PC9nPjwvc3ZnPg0K)](https://www.talos.dev/)
 [![Kubernetes](https://img.shields.io/badge/v1.28.2-blue?style=for-the-badge&logo=kubernetes&logoColor=white)](https://k8s.io/)
-[![Renovate](https://img.shields.io/github/actions/workflow/status/buroa/k8s-gitops/renovate.yaml?branch=master&label=&logo=renovatebot&style=for-the-badge&color=blue)](https://github.com/buroa/k8s-gitops/actions/workflows/renovate.yaml)
 
-[![Home-Internet](https://img.shields.io/uptimerobot/status/m794001384-01d2febd339773320ef5aae1?label=Home%20Internet&style=for-the-badge&logo=kubernetes&logoColor=white)](https://status.ktwo.io)
-[![Plex](https://img.shields.io/uptimerobot/status/m793802743-0b6044ca7f1ec92851b9a495?label=Plex&style=for-the-badge&logo=plex&logoColor=white)](https://status.ktwo.io/endpoints/_plex)
-[![Overseerr](https://img.shields.io/uptimerobot/status/m793802757-ca314435a1d7b7dc1ca5dac9?label=Overseerr&style=for-the-badge&logo=insomnia&logoColor=white)](https://status.ktwo.io/endpoints/_overseerr)
 
 </div>
 
@@ -36,7 +33,7 @@ There is a template over at [onedr0p/flux-cluster-template](https://github.com/o
 
 This semi hyper-converged cluster runs [Talos Linux](https://talos.dev), an immutable and ephemeral Linux distribution built for [Kubernetes](https://k8s.io), deployed on bare-metal [Apple Mac Mini's](https://apple.com/mac-mini). [Rook](https://rook.io) then provides my workloads with persistent block, object, and file storage; while a seperate server provides file storage for my media.
 
-🔸 _[Click here](./talos/talconfig.yaml) to see my Talos configuration._
+🔸 _[Click here](./infrastructure/talos/cluster-0/talconfig.yaml) to see my Talos configuration._
 
 ### Core Components
 
@@ -70,6 +67,15 @@ This Git repository contains the following directories under [kubernetes](./kube
 └─📁 apps          # Apps deployed into my cluster grouped by namespace (see below)
 ```
 
+This Git repository contains the following directories under [infrastructure](./infrastructure/).
+
+```sh
+📁 infrastructure
+├─📁 talos  # Infrastructure defined as code
+├───📁 cluster-0     # Cluster-0 code     
+└───📁 cluster-1     # Cluster-1 code
+```
+
 ### Cluster layout
 
 Below is a a high level look at the layout of how my directory structure with Flux works. In this brief example you are able to see that `authelia` will not be able to run until `lldap` and `cloudnative-pg` are running. It also shows that the `Cluster` custom resource depends on the `cloudnative-pg` Helm chart. This is needed because `cloudnative-pg` installs the `Cluster` custom resource definition in the Helm chart.
@@ -98,12 +104,12 @@ GitRepository :: k8s-gitops
 
 ### Networking
 
-| Name                         | CIDR            |
-|------------------------------|-----------------|
-| Kubernetes nodes             | `10.0.0.0/24`   |
-| Kubernetes pods              | `10.244.0.0/16` |
-| Kubernetes services          | `10.245.0.0/16` |
-| Kubernetes external services | `10.0.3.0/24`   |
+| Name                         | CIDR              |
+|------------------------------|-------------------|
+| Kubernetes nodes             | `172.16.13.0/24`  |
+| Kubernetes pods              | `10.244.0.0/16`   |
+| Kubernetes services          | `10.96.0.0/16`    |
+| Kubernetes external services | `172.16.11.0/24`  |
 
 - [cilium](https://github.com/cilium/cilium) is configured with the `io.cilium/lb-ipam-ips` annotation to expose Kubernetes services with their own IP over L3 (BGP), which is configured on my router. L2 (ARP) can also be announced in addition to L3 via the `io.cilium/lb-ipam-layer2` label.
 - [cloudflared](https://github.com/cloudflare/cloudflared) provides a [secure tunnel](https://www.cloudflare.com/products/tunnel) for [Cloudflare](https://www.cloudflare.com) to ingress into [ingress-nginx](https://github.com/kubernetes/ingress-nginx), my ingress controller.
@@ -122,9 +128,9 @@ GitRepository :: k8s-gitops
 
 ### Internal DNS
 
-The UDM Pro resolves DNS queries via [blocky](https://github.com/0xERR0R/blocky), which provides first-hop DNS resolution for my network. `Blocky` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `blocky` becomes unavailable, the UDM Pro is configured to fallback to `1.1.1.1` until blocky becomes available again.
+`Juniper SRX340` resolves DNS queries via [dnsdist](https://github.com/PowerDNS/pdns/blob/master/pdns/README-dnsdist.md), which provides first-hop DNS resolution for my network and routed based on domain. `DNSDist` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `dnsdist` becomes unavailable, `Juniper SRX340` is configured to fallback to `1.1.1.1` until `dndist` becomes available again.
 
-🔸 _[Click here](./kubernetes/apps/networking/blocky/app/configs/config.yml) to see my `blocky` configuration or [here](./kubernetes/apps/networking/k8s-gateway/app/configs/Corefile) to see my `k8s-gateway` configuration._
+🔸 _[Click here](./kubernetes/apps/networking/blocky/app/configs/config.yml) to see my `dnsdist` configuration or [here](./kubernetes/apps/networking/k8s-gateway/app/configs/Corefile) to see my `k8s-gateway` configuration._
 
 ### External DNS
 
@@ -140,39 +146,52 @@ The UDM Pro resolves DNS queries via [blocky](https://github.com/0xERR0R/blocky)
   <img src="assets/rack.png" align="center" alt="rack"/>
 </details>
 
-| Device                                   | Count | OS Disk Size | Data Disk Size      | Ram  | Operating System | Purpose             |
-|------------------------------------------|-------|--------------|---------------------|------|------------------|---------------------|
-| Ubiquiti UDM Pro                         | 1     | -            | -                   | -    | -                | Router              |
-| Ubiquiti USW Enterprise XG 24            | 1     | -            | -                   | -    | -                | 10GbE Switch        |
-| Apple Mac Mini (3.2GHz Intel i7)         | 3     | 512GB NVMe   | -                   | 32GB | Talos            | Kubernetes Masters  |
-| Sonnet 10GbE Thunderbolt 3 Adapter       | 3     | -            | -                   | -    | -                | 10GbE / Masters     |
-| Apple Mac Mini (3.2GHz Intel i7 + 10GbE) | 3     | 1TB NVMe     | -                   | 64GB | Talos            | Kubernetes Workers  |
-| Sabrent NVMe M.2 Thunderbolt 3 Enclosure | 6     | -            | 2TB NVMe ea.        | -    | -                | Rook Ceph / Workers |
-| Synology NAS RS1221+                     | 1     | -            | 8x22TB + 2x2TB NVMe | 32GB | -                | NFS                 |
-| CyberPower ATS PDU                       | 1     | -            | -                   | -    | -                | PDU                 |
-| CyberPower UPS                           | 1     | -            | -                   | -    | -                | PSU                 |
+### Active Device
 
+| Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
+|------------------------------------------|-------|--------------|---------------------|-------|------------------|---------------------------|
+| Juniper SRX340                           | 1     | -            | -                   | -     | -                | Router/FW                 |
+| TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Core Switch               |
+| TP-LINK TL-SG2210MP                      | 1     | -            | -                   | -     | -                | PoE+ Switch               |
+| TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch          |
+| Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3            |
+| Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                 |
+| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | -                   | 32GB  | Talos            | K8S Masters               |
+| Thinkcentre M720Q i5 8500                | 3     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
+| Thinkcentre M720Q i5 8500T               | 1     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
+| Thinkcentre M920X i7 8700T               | 2     | 512GB NVMe   | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
+| APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | UPS K8S Master + Network  |
+| APC SmartUPS C 1500VA + 2x 12AH          | 1     | -            | -                   | -     | -                | UPS TrueNAS               |
+| APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | UPS K8S Worker            |
 ---
 
-## ⭐ Stargazers
+### Unused Device
 
-<div align="center">
-
-[![Star History Chart](https://api.star-history.com/svg?repos=buroa/k8s-gitops&type=Date)](https://star-history.com/#buroa/k8s-gitops&Date)
-
-</div>
-
+| Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
+|------------------------------------------|-------|--------------|---------------------|-------|------------------|---------------------------|
+| Juniper SRX300                           | 1     | -            | -                   | -     | -                | Router/FW                 |
+| Cisco ISR G2 2901                        | 1     | -            | -                   | -     | -                | Router/CME                |
+| Juniper EX2300-24P                       | 2     | -            | -                   | -     | -                | Switch                    |
+| Cisco Catalyst 2960S-48FPS-L             | 1     | -            | -                   | -     | -                | Switch                    |
+| HPE ProLiant DL380p Gen8 2x E5-2660v2    | 3     | 32GB SD-CARD | 3x DC3610 800GB SSD | 128GB | ESX 7.0u3        | Virtualization + 2x 10GbE |
+| Synology DS 1513+  5 Bay                 | 1     | -            | -                   | 8GB   | DSM 7            | -                         |
+| Synology DS 1817+  8 Bay                 | 1     | -            | -                   | 16GB  | DSM 7            | -                         |
 ---
 
 ## 🤝 Gratitude and Thanks
 
 Thanks to all the people who donate their time to the [Kubernetes @Home](https://discord.gg/k8s-at-home) Discord community. A lot of inspiration for my cluster comes from the people that have shared their clusters using the [k8s-at-home](https://github.com/topics/k8s-at-home) GitHub topic. Be sure to check out the [Kubernetes @Home search](https://nanne.dev/k8s-at-home-search) for ideas on how to deploy applications or get ideas on what you can deploy.
 
+### Inspired By :
+
+- [Buroa K8S GitOps Repo](https://github.com/buroa/k8s-gitops).
+- [Carpenike K8S GitOps Repo](https://github.com/carpenike/k8s-gitops).
+
 ---
 
 ## 📜 Changelog
 
-See my _shitty_ [commit history](https://github.com/buroa/k8s-gitops/commits/master)
+See my _shitty_ [commit history](https://github.com/monosense25/k8s-gitops/commits/main)
 
 ---
 
