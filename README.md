@@ -165,6 +165,8 @@ GitRepository :: k8s-gitops
 | APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | Cluster-1 UPS                  |
 ---
 
+All of active devices consumed around `500 watts` and run `24x7`.
+
 ### Unused Device
 
 | Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
