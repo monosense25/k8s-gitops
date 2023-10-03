@@ -148,21 +148,21 @@ GitRepository :: k8s-gitops
 
 ### Active Device
 
-| Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
-|------------------------------------------|-------|--------------|---------------------|-------|------------------|---------------------------|
-| Juniper SRX340                           | 1     | -            | -                   | -     | -                | Router/FW                 |
-| TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Core Switch               |
-| TP-LINK TL-SG2210MP                      | 1     | -            | -                   | -     | -                | PoE+ Switch               |
-| TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch          |
-| Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3            |
-| Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                 |
-| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | -                   | 32GB  | Talos            | K8S Masters               |
-| Thinkcentre M720Q i5 8500                | 3     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
-| Thinkcentre M720Q i5 8500T               | 1     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
-| Thinkcentre M920X i7 8700T               | 2     | 512GB NVMe   | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers       |
-| APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | UPS K8S Master + Network  |
-| APC SmartUPS C 1500VA + 2x 12AH          | 1     | -            | -                   | -     | -                | UPS TrueNAS               |
-| APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | UPS K8S Worker            |
+| Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                        |
+|------------------------------------------|-------|--------------|---------------------|-------|------------------|--------------------------------|
+| Juniper SRX340                           | 1     | -            | -                   | -     | -                | Router/FW                      |
+| TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Core Switch                    |
+| TP-LINK TL-SG2210MP                      | 1     | -            | -                   | -     | -                | PoE+ Switch                    |
+| TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch               |
+| Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3                 |
+| Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                      |
+| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master & Worker Cluster-0      |
+| Thinkcentre M720Q i5 8500  2x10GbE       | 3     | 256GB SSD    | 1x 2TB NVMe         | 32GB  | Talos            | Master Cluster-1               |
+| Thinkcentre M720Q i5 8500T 2x10GbE       | 1     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
+| Thinkcentre M920X i7 8700T 2x10GbE       | 2     | 512GB NVMe   | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
+| APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | Cluster-0 + Network UPS        |
+| APC SmartUPS C 1500VA + 2x 12AH          | 1     | -            | -                   | -     | -                | TrueNAS UPS                    |
+| APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | Cluster-1 UPS                  |
 ---
 
 ### Unused Device
@@ -173,7 +173,7 @@ GitRepository :: k8s-gitops
 | Cisco ISR G2 2901                        | 1     | -            | -                   | -     | -                | Router/CME                |
 | Juniper EX2300-24P                       | 2     | -            | -                   | -     | -                | Switch                    |
 | Cisco Catalyst 2960S-48FPS-L             | 1     | -            | -                   | -     | -                | Switch                    |
-| HPE ProLiant DL380p Gen8 2x E5-2660v2    | 3     | 32GB SD-CARD | 3x DC3610 800GB SSD | 128GB | ESX 7.0u3        | Virtualization + 2x 10GbE |
+| HPE ProLiant DL380p Gen8 1x E5-2660v2    | 3     | 32GB SD-CARD | 3x DC3610 800GB SSD | 128GB | ESX 7.0u3        | Virtualization + 2x 10GbE |
 | Synology DS 1513+  5 Bay                 | 1     | -            | -                   | 8GB   | DSM 7            | -                         |
 | Synology DS 1817+  8 Bay                 | 1     | -            | -                   | 16GB  | DSM 7            | -                         |
 ---
