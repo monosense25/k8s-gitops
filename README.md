@@ -31,7 +31,7 @@ There is a template over at [onedr0p/flux-cluster-template](https://github.com/o
 
 ### Installation
 
-This semi hyper-converged cluster runs [Talos Linux](https://talos.dev), an immutable and ephemeral Linux distribution built for [Kubernetes](https://k8s.io), deployed on bare-metal [Apple Mac Mini's](https://apple.com/mac-mini). [Rook](https://rook.io) then provides my workloads with persistent block, object, and file storage; while a seperate server provides file storage for my media.
+This semi hyper-converged cluster runs [Talos Linux](https://talos.dev), an immutable and ephemeral Linux distribution built for [Kubernetes](https://k8s.io), deployed on bare-metal [ThinkCentre M910q](https://www.lenovo.com/us/en/p/desktops/thinkcentre/m-series-tiny/thinkcentre-m910q/11tc1mt910q), [ThinkCentre M720Q](https://www.lenovo.com/id/in/desktops/thinkcentre/m-series-tiny/ThinkCentre-M720q/p/11TC1MTM72Q), and [ThinkCentre M920x](https://www.lenovo.com/us/en/p/desktops/thinkcentre/m-series-tiny/thinkcentre-m920x/11tc1mtm92x). [Rook](https://rook.io) then provides my workloads with persistent block, object, and file storage; while a seperate [TrueNAS Core](https://www.truenas.com/) provides file storage for my media and also S3 and iSCSI.
 
 🔸 _[Click here](./infrastructure/talos/cluster-0/talconfig.yaml) to see my Talos configuration._
 
@@ -128,7 +128,7 @@ GitRepository :: k8s-gitops
 
 ### Internal DNS
 
-`Juniper SRX340` resolves DNS queries via [dnsdist](https://github.com/PowerDNS/pdns/blob/master/pdns/README-dnsdist.md), which provides first-hop DNS resolution for my network and routed based on domain. `DNSDist` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `dnsdist` becomes unavailable, `Juniper SRX340` is configured to fallback to `1.1.1.1` until `dndist` becomes available again.
+[Juniper SRX340](https://www.juniper.net/us/en/products/security/srx-series/srx340-enterprise-firewall.html) resolves DNS queries via [dnsdist](https://github.com/PowerDNS/pdns/blob/master/pdns/README-dnsdist.md), which provides first-hop DNS resolution for my network and routed based on domain. `DNSDist` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `dnsdist` becomes unavailable, [Juniper SRX340](https://www.juniper.net/us/en/products/security/srx-series/srx340-enterprise-firewall.html) is configured to fallback to `1.1.1.1` until `dndist` becomes available again.
 
 🔸 _[Click here](./kubernetes/apps/networking/blocky/app/configs/config.yml) to see my `dnsdist` configuration or [here](./kubernetes/apps/networking/k8s-gateway/app/configs/Corefile) to see my `k8s-gateway` configuration._
 
@@ -151,15 +151,15 @@ GitRepository :: k8s-gitops
 | Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                        |
 |------------------------------------------|-------|--------------|---------------------|-------|------------------|--------------------------------|
 | Juniper SRX340                           | 1     | -            | -                   | -     | -                | Router/FW                      |
-| TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Core Switch                    |
+| TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Aggregation Switch             |
 | TP-LINK TL-SG2210MP                      | 1     | -            | -                   | -     | -                | PoE+ Switch                    |
 | TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch               |
 | Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3                 |
 | Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                      |
 | Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master & Worker Cluster-0      |
-| Thinkcentre M720Q i5 8500  2x10GbE       | 3     | 256GB SSD    | 1x 2TB NVMe         | 32GB  | Talos            | Master Cluster-1               |
-| Thinkcentre M720Q i5 8500T 2x10GbE       | 1     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
-| Thinkcentre M920X i7 8700T 2x10GbE       | 2     | 512GB NVMe   | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
+| Thinkcentre M720Q i5 8500  2x10GbE       | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master Cluster-1               |
+| Thinkcentre M720Q i7 8700T 2x10GbE       | 1     | 256GB SSD    | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
+| Thinkcentre M920X i7 8700T 2x10GbE       | 2     | 512GB NVMe   | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
 | APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | Cluster-0 + Network UPS        |
 | APC SmartUPS C 1500VA + 2x 12AH          | 1     | -            | -                   | -     | -                | TrueNAS UPS                    |
 | APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | Cluster-1 UPS                  |
@@ -169,13 +169,14 @@ GitRepository :: k8s-gitops
 
 | Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
 |------------------------------------------|-------|--------------|---------------------|-------|------------------|---------------------------|
-| Juniper SRX300                           | 1     | -            | -                   | -     | -                | Router/FW                 |
-| Cisco ISR G2 2901                        | 1     | -            | -                   | -     | -                | Router/CME                |
-| Juniper EX2300-24P                       | 2     | -            | -                   | -     | -                | Switch                    |
-| Cisco Catalyst 2960S-48FPS-L             | 1     | -            | -                   | -     | -                | Switch                    |
+| Juniper SRX300                           | 1     | -            | -                   | 4GB   | JunOS            | Router/FW                 |
+| Cisco ISR G2 2901                        | 1     | -            | -                   | 2GB   | IOS              | Router/CME                |
+| Juniper EX2300-24P                       | 2     | -            | -                   | -     | JunOS            | Switch                    |
+| Cisco Catalyst 2960S-48FPS-L             | 1     | -            | -                   | -     | IOS              | Switch                    |
 | HPE ProLiant DL380p Gen8 1x E5-2660v2    | 3     | 32GB SD-CARD | 3x DC3610 800GB SSD | 128GB | ESX 7.0u3        | Virtualization + 2x 10GbE |
 | Synology DS 1513+  5 Bay                 | 1     | -            | -                   | 8GB   | DSM 7            | -                         |
 | Synology DS 1817+  8 Bay                 | 1     | -            | -                   | 16GB  | DSM 7            | -                         |
+| Intel NUC7i3BNH                          | 1     | -            | -                   | -     | -                | -                         |
 ---
 
 ## 🤝 Gratitude and Thanks
