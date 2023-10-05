@@ -156,7 +156,7 @@ GitRepository :: k8s-gitops
 | TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch               |
 | Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3                 |
 | Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                      |
-| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master & Worker Cluster-0      |
+| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | 1x 512GB NVMe       | 32GB  | Talos            | Master & Worker Cluster-0      |
 | Thinkcentre M720Q i5 8500  2x10GbE       | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master Cluster-1               |
 | Thinkcentre M720Q i7 8700T 2x10GbE       | 1     | 256GB SSD    | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
 | Thinkcentre M920X i7 8700T 2x10GbE       | 2     | 512GB NVMe   | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
