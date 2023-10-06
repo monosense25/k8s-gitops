@@ -1,0 +1,194 @@
+---
+#
+# Cluster INFRA talconfig
+# v0.1
+#
+clusterName: ${clusterName}
+
+clusterPodNets:
+  - ${infraPodCidr}
+clusterSvcNets:
+  - ${infraSvcCidr}
+
+talosVersion: v1.5.3
+kubernetesVersion: 1.28.2
+endpoint: https://infra.${domainName}:6443
+
+additionalApiServerCertSans:
+  - ${clusterEndpointIP}
+
+additionalMachineCertSans:
+  - ${clusterEndpointIP}
+  - k8s-infra.${domainName}
+
+cniConfig:
+  name: none
+
+nodes:
+  # ThinkCentre M910Q
+  # i7 7700T / 32GB / 256GB SSD OS / 1x 1GbE
+  - hostname: infra-mw0.${domainName}
+    ipAddress: 172.16.13.11
+    installDiskSelector: /dev/sda
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.14.5
+    networkInterfaces:
+      - interface: enp0s31f6
+        dhcp: false
+        mtu: 9014
+        vlans:
+          # k8s / servers node vlan
+          - vlanId: 1613
+            dhcp: true
+            addresses:
+              - 172.16.13.11/24
+            mtu: 9014
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 172.16.13.254
+          # services vlan
+          - vlanId: 1611
+            dhcp: false
+            addresses:
+              - 172.16.11.11
+            mtu: 1500
+          # home-iot vlan
+          - vlanId: 1612
+            dhcp: false
+            addresses:
+              - 172.16.12.11/24
+            mtu: 1500
+    nodeLabels: &infraNodeLabels
+      topology.kubernetes.io/region: ${clusterName}
+      topology.kubernetes.io/zone: dpk-infra
+
+  - hostname: infra-mw1.${domainName}
+    ipAddress: 172.16.13.12
+    installDiskSelector: /dev/sda
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.14.5
+    networkInterfaces:
+      - interface: enp0s31f6
+        dhcp: false
+        mtu: 9014
+        vlans:
+          - vlanId: 1613
+            dhcp: true
+            addresses:
+              - 172.16.13.12/24
+            mtu: 9014
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 172.16.13.254
+          - vlanId: 1611
+            dhcp: false
+            addresses:
+              - 172.16.11.12/24
+            mtu: 1500
+          - vlanId: 1612
+            dhcp: false
+            addresses:
+              - 172.16.12.12/24
+            mtu: 1500
+    nodeLabels: *infraNodeLabels
+
+  - hostname: infra-mw2.${domainName}
+    ipAddress: 172.16.13.13
+    installDiskSelector: /dev/sda
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.14.5
+    networkInterfaces:
+      - interface: enp0s31f6
+        dhcp: false
+        mtu: 9014
+        vlans:
+          - vlanId: 1613
+            dhcp: false
+            addresses:
+              - 172.16.13.13/24
+            mtu: 9014
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 172.16.13.254
+          - vlanId: 1611
+            dhcp: false
+            addresses:
+              - 172.16.11.13/24
+            mtu: 1500
+          - vlanId: 1612
+            dhcp: false
+            addresses:
+              - 172.16.12.13/24
+            mtu: 1500
+    nodeLabels: *infraNodeLabels
+
+controlPlane:
+  patches:
+    - |-
+      cluster:
+        allowSchedulingOnMasters: true
+        proxy:
+          disabled: true
+        etcd:
+          advertisedSubnets:
+            - 172.16.11.0/24
+        extraManifests:
+          - https://raw.githubusercontent.com/monosense25/k8s-gitops/main/infrastructure/talos/infra/integrations/cni/cilium.yaml
+          - https://raw.githubusercontent.com/monosense25/k8s-gitops/main/infrastructure/talos/infra/integrations/kubelet-csr-approver/kubelet-csr-approver.yaml
+
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+    - |-
+      machine:
+        install:
+          extensions:
+            - image: ghcr.io/siderolabs/i915-ucode:20230804
+            - image: ghcr.io/siderolabs/intel-ucode:20230808
+            - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.3
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+          - op: create
+            path: /var/etv/nut/upsmon.conf
+            permissions: 0o600
+            content: |-
+              MONITOR ${upsmonInfraHost} 1 remote ${upsmonInfraPasswd} slave
+              SHUTDOWNCMD "/sbin/poweroff"
+        kubelet:
+          extraArgs:
+            feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
+            rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 172.16.11.0/24
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+          kernel.randomize_va_space: 0
+          net.core.netdev_max_backlog: 30000
+          net.core.rmem_max: 67108864
+          net.core.wmem_max: 67108864
+          net.ipv4.tcp_rmem: 4096 87380 33554432
+          net.ipv4.tcp_wmem: 4096 65536 33554432
+          net.ipv4.tcp_tw_reuse: 1
+          net.ipv4.tcp_window_scaling: 1
+        time:
+          disabled: false
+          servers:
+            - 172.16.11.254
