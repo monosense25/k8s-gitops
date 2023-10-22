@@ -41,7 +41,7 @@ This semi hyper-converged cluster runs [Talos Linux](https://talos.dev), an immu
 - [cilium](https://cilium.io): Internal Kubernetes networking plugin.
 - [cert-manager](https://cert-manager.io): Creates SSL certificates for services in my Kubernetes cluster.
 - [external-dns](https://github.com/kubernetes-sigs/external-dns): Automatically manages DNS records from my cluster in a cloud DNS provider.
-- [external-secrets](https://external-secrets.io): Managed Kubernetes secrets using [1Password Connect](https://github.com/1Password/connect).
+- [external-secrets](https://external-secrets.io): Managed Kubernetes secrets using [Azure KeyVault](https://azure.microsoft.com/en-us/products/key-vault).
 - [ingress-nginx](https://github.com/kubernetes/ingress-nginx): Ingress controller for Kubernetes using NGINX as a reverse proxy and load balancer.
 - [rook](https://rook.io): Distributed block storage for peristent storage.
 - [sops](https://github.com/getsops/sops): Managed secrets for Kubernetes and Terraform which are commited to Git.
@@ -142,8 +142,7 @@ GitRepository :: k8s-gitops
 
 <details>
   <summary>Rack Layout</summary>
-
-  <img src="docs/assets/rack-layout.png" align="center" alt="rack"/>
+  <img src="docs/assets/rack-layout.png" align="center" alt="Rack Layout"/>
 </details>
 
 ### Active Device
@@ -189,3 +188,8 @@ See my _shitty_ [commit history](https://github.com/monosense25/k8s-gitops/commi
 ## 🔏 License
 
 See [LICENSE](./LICENSE)
+
+---
+
+## :mag_right:&nbsp;Related Repo
+- My [VyOS Config](https://github.com/monosense25/vyos-config)

@@ -1,6 +1,6 @@
 ## RESET TALOS (credit : https://raw.githubusercontent.com/szinn/k8s-homelab/main/infrastructure/talos/reset.sh)
 
-```
+```bash
 #!/bin/bash
 
 # Reset the worker nodes first since the path to them is through the control plane nodes
