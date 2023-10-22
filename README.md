@@ -106,10 +106,10 @@ GitRepository :: k8s-gitops
 
 | Name                         | CIDR              |
 |------------------------------|-------------------|
-| Kubernetes nodes             | `172.16.13.0/24`  |
+| Kubernetes nodes             | `172.16.11.0/24`  |
 | Kubernetes pods              | `10.244.0.0/16`   |
 | Kubernetes services          | `10.96.0.0/16`    |
-| Kubernetes external services | `172.16.11.0/24`  |
+| Kubernetes external services | `10.11.10.0/24`   |
 
 - [cilium](https://github.com/cilium/cilium) is configured with the `io.cilium/lb-ipam-ips` annotation to expose Kubernetes services with their own IP over L3 (BGP), which is configured on my router. L2 (ARP) can also be announced in addition to L3 via the `io.cilium/lb-ipam-layer2` label.
 - [cloudflared](https://github.com/cloudflare/cloudflared) provides a [secure tunnel](https://www.cloudflare.com/products/tunnel) for [Cloudflare](https://www.cloudflare.com) to ingress into [ingress-nginx](https://github.com/kubernetes/ingress-nginx), my ingress controller.
@@ -128,7 +128,7 @@ GitRepository :: k8s-gitops
 
 ### Internal DNS
 
-[Juniper SRX340](https://www.juniper.net/us/en/products/security/srx-series/srx340-enterprise-firewall.html) resolves DNS queries via [dnsdist](https://github.com/PowerDNS/pdns/blob/master/pdns/README-dnsdist.md), which provides first-hop DNS resolution for my network and routed based on domain. `DNSDist` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `dnsdist` becomes unavailable, [Juniper SRX340](https://www.juniper.net/us/en/products/security/srx-series/srx340-enterprise-firewall.html) is configured to fallback to `1.1.1.1` until `dndist` becomes available again.
+[VyOS](https://vyos.io/) resolves DNS queries via [dnsdist](https://github.com/PowerDNS/pdns/blob/master/pdns/README-dnsdist.md), which provides first-hop DNS resolution for my network and routed based on domain. `DNSDist` forwards requests targeted towards my public domain via [k8s-gateway](https://github.com/ori-edge/k8s_gateway). Last-hop DNS resolution resolves via [1.1.1.1](https://1.1.1.1/dns/), which is configured as my primary DNS upstream provider. If for any reason `dnsdist` becomes unavailable, [VyOS](https://vyos.io/) is configured to fallback to `1.1.1.1` until `dndist` becomes available again.
 
 🔸 _[Click here](./kubernetes/apps/networking/blocky/app/configs/config.yml) to see my `dnsdist` configuration or [here](./kubernetes/apps/networking/k8s-gateway/app/configs/Corefile) to see my `k8s-gateway` configuration._
 
@@ -141,45 +141,31 @@ GitRepository :: k8s-gitops
 ## 🔧 Hardware
 
 <details>
-  <summary>Click to see my rack</summary>
+  <summary>Rack Layout</summary>
 
-  <img src="assets/rack.png" align="center" alt="rack"/>
+  <img src="docs/assets/rack-layout.png" align="center" alt="rack"/>
 </details>
 
 ### Active Device
 
 | Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                        |
 |------------------------------------------|-------|--------------|---------------------|-------|------------------|--------------------------------|
-| Juniper SRX340                           | 1     | -            | -                   | -     | -                | Router/FW                      |
+| Thinkcentre M920X i5 8500 2x10GbE        | 1     | 512GB NVMe   | -                   | 32GB  | -                | Router/FW                      |
 | TP-LINK TL-SG3428X                       | 1     | -            | -                   | -     | -                | Aggregation Switch             |
 | TP-LINK TL-SG2210MP                      | 1     | -            | -                   | -     | -                | PoE+ Switch                    |
 | TP-LINK TL-SX3008F                       | 2     | -            | -                   | -     | -                | 10GbE ToR Switch               |
-| Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | iSCSI, NFS, S3                 |
-| Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | Talos            | Sidero CP                      |
-| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | 1x 512GB NVMe       | 32GB  | Talos            | Master & Worker Cluster-0      |
-| Thinkcentre M720Q i5 8500  2x10GbE       | 3     | 256GB SSD    | -                   | 32GB  | Talos            | Master Cluster-1               |
-| Thinkcentre M720Q i7 8700T 2x10GbE       | 1     | 256GB SSD    | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
-| Thinkcentre M920X i7 8700T 2x10GbE       | 2     | 512GB NVMe   | 1x 4TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers Cluster-1  |
-| APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | Cluster-0 + Network UPS        |
-| APC SmartUPS C 1500VA + 2x 12AH          | 1     | -            | -                   | -     | -                | TrueNAS UPS                    |
-| APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | Cluster-1 UPS                  |
+| Dell PowerEdge R720xd 1x E5-2660v2       | 1     | 500GB SSD    | 12x4TB RAID Z1      | 128GB | TrueNas Core     | S3                             |
+| Synology DS 1817+ 8 Bay , 2x10GbE        | 1     | -            | 8x800GB DCS3610 SSD | 16GB  | DSM 7            | iSCSI, NFS, CIFS               |
+| Elitedesk 400 G1 Mini                    | 1     | 256GB SSD    | -                   | 8GB   | HASSIO           | Home Assistant                 |
+| Thinkcentre M910Q i7 7700T               | 3     | 256GB SSD    | 1x 512GB NVMe       | 32GB  | Talos            | Control Plane                  |
+| Thinkcentre M720Q i7 8700T 2x10GbE       | 3     | 256GB SSD    | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers            |
+| Thinkcentre M920X i7 8700T 2x10GbE       | 1     | 512GB NVMe   | 1x 2TB NVMe         | 64GB  | Talos            | Rook Ceph / Workers            |
+| APC SUA 1500VA + 2x 50AH                 | 1     | -            | -                   | -     | -                | Network UPS                    |
+| APC SmartUPS C 2200VA + 2x 170AH         | 1     | -            | -                   | -     | -                | TrueNAS UPS                    |
+| APC SmartUPS C 2200VA + 2x 17AH          | 1     | -            | -                   | -     | -                | K8S Nodes UPS                  |
 ---
 
-All of active devices consumed around `500 watts` and run `24x7`.
-
-### Unused Device
-
-| Device                                   | Count | OS Disk Size | Data Disk Size      | RAM   | Operating System | Purpose                   |
-|------------------------------------------|-------|--------------|---------------------|-------|------------------|---------------------------|
-| Juniper SRX300                           | 1     | -            | -                   | 4GB   | JunOS            | Router/FW                 |
-| Cisco ISR G2 2901                        | 1     | -            | -                   | 2GB   | IOS              | Router/CME                |
-| Juniper EX2300-24P                       | 2     | -            | -                   | -     | JunOS            | Switch                    |
-| Cisco Catalyst 2960S-48FPS-L             | 1     | -            | -                   | -     | IOS              | Switch                    |
-| HPE ProLiant DL380p Gen8 1x E5-2660v2    | 3     | 32GB SD-CARD | 3x DC3610 800GB SSD | 128GB | ESX 7.0u3        | Virtualization + 2x 10GbE |
-| Synology DS 1513+  5 Bay                 | 1     | -            | -                   | 8GB   | DSM 7            | -                         |
-| Synology DS 1817+  8 Bay                 | 1     | -            | -                   | 16GB  | DSM 7            | -                         |
-| Intel NUC7i3BNH                          | 1     | -            | -                   | -     | -                | -                         |
----
+All of active devices consumed around `700 watts` and runs `24x7`.
 
 ## 🤝 Gratitude and Thanks
 
@@ -189,6 +175,8 @@ Thanks to all the people who donate their time to the [Kubernetes @Home](https:/
 
 - [Buroa K8S GitOps Repo](https://github.com/buroa/k8s-gitops).
 - [Carpenike K8S GitOps Repo](https://github.com/carpenike/k8s-gitops).
+- [Bᴇʀɴᴅ Sᴄʜᴏʀɢᴇʀs HomeOps Repo](https://github.com/bjw-s/home-ops).
+- [Budimanjojo HomeCluster Repo](https://github.com/budimanjojo/home-cluster).
 
 ---
 

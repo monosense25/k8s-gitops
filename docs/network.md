@@ -16,8 +16,8 @@
 |                         | 8           | TVROOM-1           | -                | 1Gbps (CAT6)    | Smart TV             | IOT     |
 |                         | 9           | TVROOM-2           | -                | 1Gbps (CAT6)    | PS4Pro               | IOT     |
 |                         | 10          | TVROOM-3           | -                | 1Gbps (CAT6)    | -                    | IOT     |
-|                         | 12          | FAREZZ-1           | -                | 1Gbps (CAT6)    | -                    | HOME    |
-|                         | 13          | FAREZZ-2           | -                | 1Gbps (CAT6)    | -                    | HOME    |
+|                         | 12          | FRZ-1              | -                | 1Gbps (CAT6)    | -                    | HOME    |
+|                         | 13          | FRZ-2              | -                | 1Gbps (CAT6)    | -                    | HOME    |
 |                         | 14          | P53                |                  | 1Gbps (CAT6)    |                      | MGMT    |
 |                         | 15          | WORKSTATION        |                  | 1Gbps (CAT6)    |                      | MGMT    |
 |                         | 16          |                    |                  | 1Gbps (CAT6)    |                      |         |
