@@ -39,3 +39,13 @@ spec:
       nameservers:
         - "203.142.82.222"
         - "203.142.84.222"
+        
+    prometheus:
+      enabled: true
+      servicemonitor:
+        enabled: true
+        prometheusInstance: monitoring # TODO: Change this to prometheus instance name
+    webhook:
+      replicaCount: 2
+    cainjector:
+      replicaCount: 2
