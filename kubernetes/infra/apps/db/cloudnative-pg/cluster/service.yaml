@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+  namespace: db
+  annotations:
+    coredns.io/hostname: pginfra.monosense.io
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  # TODO : Change externalIP to LoadBalancer IP Pools for Infra
+  externalIPs: ["10.45.20.15"]
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    postgresql: postgres
+    role: primary
