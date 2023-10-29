@@ -713,6 +713,7 @@ spec:
                   key: clean-cilium-bpf-state
                   name: cilium-config
                   optional: true
+                  # TODO : Need to change this KUBERNETES_SERVICE_HOST value
             - name: KUBERNETES_SERVICE_HOST
               value: 10.6.0.2
             - name: KUBERNETES_SERVICE_PORT
