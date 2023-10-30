@@ -1,8 +1,3 @@
----
-#
-# Cluster INFRA talconfig
-# v0.1
-#
 clusterName: ${clusterName}
 
 clusterPodNets:
@@ -10,16 +5,16 @@ clusterPodNets:
 clusterSvcNets:
   - ${infraSvcCidr}
 
-talosVersion: v1.5.3
-kubernetesVersion: 1.28.2
-endpoint: https://infra.${domainName}:6443
+talosVersion: v1.5.4
+kubernetesVersion: 1.28.3
+endpoint: https://${clusterName}.${domainName}:6443
 
 additionalApiServerCertSans:
   - ${clusterEndpointIP}
 
 additionalMachineCertSans:
   - ${clusterEndpointIP}
-  - k8s-infra.${domainName}
+  - ${clusterName}.${domainName}
 
 cniConfig:
   name: none
@@ -27,132 +22,225 @@ cniConfig:
 nodes:
   # ThinkCentre M910Q
   # i7 7700T / 32GB / 256GB SSD OS / 1x 1GbE
-  - hostname: infra-mw0.${domainName}
-    ipAddress: 172.16.13.11
-    installDiskSelector: /dev/sda
+  - hostname: k8s-m0.${domainName}
+    ipAddress: 172.16.11.10
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
     controlPlane: true
     disableSearchDomain: true
     nameservers:
-      - 172.16.14.5
+      - 172.16.16.5
     networkInterfaces:
       - interface: enp0s31f6
-        dhcp: false
-        mtu: 9014
-        vlans:
-          # k8s / servers node vlan
-          - vlanId: 1613
-            dhcp: true
-            addresses:
-              - 172.16.13.11/24
-            mtu: 9014
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 172.16.13.254
-          # services vlan
-          - vlanId: 1611
-            dhcp: false
-            addresses:
-              - 172.16.11.11
-            mtu: 1500
-          # home-iot vlan
-          - vlanId: 1612
-            dhcp: false
-            addresses:
-              - 172.16.12.11/24
-            mtu: 1500
-    nodeLabels: &infraNodeLabels
+        mtu: 9000
+        dhcp: true
+    nodeLabels: &masterNodeLabels
       topology.kubernetes.io/region: ${clusterName}
-      topology.kubernetes.io/zone: dpk-infra
+      topology.kubernetes.io/zone: k8s-master
 
-  - hostname: infra-mw1.${domainName}
-    ipAddress: 172.16.13.12
-    installDiskSelector: /dev/sda
+  - hostname: k8s-m1.${domainName}
+    ipAddress: 172.16.11.11
+    installDiskSelector: 
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
     controlPlane: true
     disableSearchDomain: true
     nameservers:
-      - 172.16.14.5
+      - 172.16.16.5
     networkInterfaces:
       - interface: enp0s31f6
-        dhcp: false
-        mtu: 9014
-        vlans:
-          - vlanId: 1613
-            dhcp: true
-            addresses:
-              - 172.16.13.12/24
-            mtu: 9014
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 172.16.13.254
-          - vlanId: 1611
-            dhcp: false
-            addresses:
-              - 172.16.11.12/24
-            mtu: 1500
-          - vlanId: 1612
-            dhcp: false
-            addresses:
-              - 172.16.12.12/24
-            mtu: 1500
-    nodeLabels: *infraNodeLabels
+        dhcp: true
+        mtu: 9000
+    nodeLabels: *masterNodeLabels
 
-  - hostname: infra-mw2.${domainName}
-    ipAddress: 172.16.13.13
-    installDiskSelector: /dev/sda
+  - hostname: k8s-m2.${domainName}
+    ipAddress: 172.16.11.12
+    installDiskSelector: 
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
     controlPlane: true
     disableSearchDomain: true
     nameservers:
-      - 172.16.14.5
+      - 172.16.16.5
     networkInterfaces:
       - interface: enp0s31f6
-        dhcp: false
-        mtu: 9014
-        vlans:
-          - vlanId: 1613
-            dhcp: false
-            addresses:
-              - 172.16.13.13/24
-            mtu: 9014
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 172.16.13.254
-          - vlanId: 1611
-            dhcp: false
-            addresses:
-              - 172.16.11.13/24
-            mtu: 1500
-          - vlanId: 1612
-            dhcp: false
-            addresses:
-              - 172.16.12.13/24
-            mtu: 1500
-    nodeLabels: *infraNodeLabels
+        dhcp: true
+        mtu: 9000
+    nodeLabels: *masterNodeLabels
+
+  ## Worker Node 
+  # Mixed of M720q and M920x
+  # Each node having : Core i7-8700t, 64GB DDR4 2666v, 1x240GB-512GB OS DISK, 1x1 TB NVMe for Rook-Ceph
+  #                    1x1Gbps Intel Gigabit (On Board), and 2x10Gbps Mellanox ConnectX-3 Pro EN (PCIe)
+  - hostname: k8s-w0.${domainName}
+    ipAddress: 172.16.11.13
+    disableSearchDomain: true
+    controlPlane: false
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    machineDisks:
+      - device: 
+          busPath: /pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme0/nvme0n1
+        partitions:
+          - mountpoint: /var/mnt/ssd
+    networkInterfaces:
+      - interface: eno1
+        ignore: true
+      - interface: bond0
+        mtu: 9000
+        dhcp: true
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: 'e4:1d:79:67:75:95'
+            - hardwareAddr: 'e4:1d:79:67:75:96'
+    nodeLabels: &workerNodeLabels
+      node-role.kubernetes.io/worker: worker
+      topology.kubernetes.io/region: ${clusterName}
+      topology.kubernetes.io/zone: k8s-worker
+    patches:
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/mnt/ssd
+                type: bind
+                source: /var/mnt/ssd
+                options:
+                  - rbind
+                  - rshared
+                  - rw
+
+  - hostname: k8s-w1.${domainName}
+    ipAddress: 172.16.11.14
+    disableSearchDomain: true
+    controlPlane: false
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    machineDisks:
+      - device: 
+          busPath: /pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme0/nvme0n1
+        partitions:
+          - mountpoint: /var/mnt/ssd
+    networkInterfaces:
+      - interface: eno1
+        ignore: true
+      - interface: bond0
+        mtu: 9000
+        dhcp: true
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: 'e4:1d:85:75:d8:73'
+            - hardwareAddr: 'e4:1d:85:75:d8:74'
+    nodeLabels: *workerNodeLabels
+    patches:
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/mnt/ssd
+                type: bind
+                source: /var/mnt/ssd
+                options:
+                  - rbind
+                  - rshared
+                  - rw
+
+  - hostname: k8s-w2.${domainName}
+    ipAddress: 172.16.11.15
+    disableSearchDomain: true
+    controlPlane: false
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    machineDisks:
+      - device: 
+          busPath: /pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme0/nvme0n1 
+        partitions:
+          - mountpoint: /var/mnt/ssd
+    networkInterfaces:
+      - interface: eno1
+        ignore: true
+      - interface: bond0
+        mtu: 9000
+        dhcp: true
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: 'e4:1d:7a:67:a5:d4'
+            - hardwareAddr: 'e4:1d:7a:67:a5:d5'
+    nodeLabels: *workerNodeLabels
+    patches:
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/mnt/ssd
+                type: bind
+                source: /var/mnt/ssd
+                options:
+                  - rbind
+                  - rshared
+                  - rw
+  
+  - hostname: k8s-w3.${domainName}
+    ipAddress: 172.16.11.16
+    disableSearchDomain: true
+    controlPlane: false
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:1b.4/0000:03:00.0/nvme/nvme1/nvme1n1
+    machineDisks:
+      - device: 
+          busPath: /pci0000:00/0000:00:1b.0/0000:02:00.0/nvme/nvme0/nvme0n1
+        partitions:
+          - mountpoint: /var/mnt/ssd
+    networkInterfaces:
+      - interface: eno1
+        ignore: true
+      - interface: bond0
+        mtu: 9000
+        dhcp: true
+        bond:
+          mode: active-backup
+          deviceSelectors:
+            - hardwareAddr: 'ec:0d:9a:00:27:90'
+            - hardwareAddr: 'ec:0d:9a:00:27:91'
+    nodeLabels: *workerNodeLabels
+    patches:
+      - |-
+        machine:
+          kubelet:
+            extraMounts:
+              - destination: /var/mnt/ssd
+                type: bind
+                source: /var/mnt/ssd
+                options:
+                  - rbind
+                  - rshared
+                  - rw
 
 controlPlane:
   patches:
     - |-
       cluster:
-        allowSchedulingOnMasters: true
+        apiServer:
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        discovery:
+          registries:
+            service:
+              disabled: true
         proxy:
           disabled: true
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
         etcd:
-          advertisedSubnets:
-            - 172.16.11.0/24
-        extraManifests:
-          - https://raw.githubusercontent.com/monosense25/k8s-gitops/main/infrastructure/talos/infra/integrations/cni/cilium.yaml
-          - https://raw.githubusercontent.com/monosense25/k8s-gitops/main/infrastructure/talos/infra/integrations/kubelet-csr-approver/kubelet-csr-approver.yaml
-
-    - |-
-      - op: remove
-        path: /cluster/apiServer/admissionControl
-
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
     - |-
       machine:
         install:
           extensions:
-            - image: ghcr.io/siderolabs/i915-ucode:20230804
-            - image: ghcr.io/siderolabs/intel-ucode:20230808
-            - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
             - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.3
         files:
           - op: create
@@ -166,29 +254,78 @@ controlPlane:
             path: /var/etv/nut/upsmon.conf
             permissions: 0o600
             content: |-
-              MONITOR ${upsmonInfraHost} 1 remote ${upsmonInfraPasswd} slave
+              MONITOR ${upsmonMasterHost} 1 remote ${upsmonMasterPass} slave
               SHUTDOWNCMD "/sbin/poweroff"
         kubelet:
           extraArgs:
             feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
-          extraConfig:
-            maxPods: 150
-          nodeIP:
-            validSubnets:
-                - 172.16.11.0/24
+        install:
+          extraKernelArgs:
+            - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
+        logging:
+          destinations:
+            - endpoint: udp://${vectorAggregatorAddr}:6002/
+              format: json_lines
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - ${clusterName}.${domainName}
         sysctls:
           fs.inotify.max_user_watches: "1048576"
           fs.inotify.max_user_instances: "8192"
-          kernel.randomize_va_space: 0
-          net.core.netdev_max_backlog: 30000
-          net.core.rmem_max: 67108864
-          net.core.wmem_max: 67108864
-          net.ipv4.tcp_rmem: 4096 87380 33554432
-          net.ipv4.tcp_wmem: 4096 65536 33554432
-          net.ipv4.tcp_tw_reuse: 1
-          net.ipv4.tcp_window_scaling: 1
         time:
           disabled: false
           servers:
-            - 172.16.11.254
+            - 172.16.10.254
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+worker:
+  patches:
+    - |-
+      machine:
+        files:
+          - content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+            path: /etc/cri/conf.d/20-customization.part
+            op: create
+          - content: |-
+              MONITOR ${upsmonWorkerHost} 1 remote ${upsmonWorkerPass} slave
+              SHUTDOWNCMD "/sbin/poweroff"
+            path: /var/etv/nut/upsmon.conf
+            permissions: 0o600
+            op: create
+        kubelet:
+          extraArgs:
+            feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
+            rotate-server-certificates: "true"
+        install:
+          extraKernelArgs:
+            - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
+          extensions:
+            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.3
+            - image: ghcr.io/siderolabs/i915-ucode:20230804
+            - image: ghcr.io/siderolabs/intel-ucode:20230808
+            - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+        logging:
+          destinations:
+            - endpoint: udp://${vectorAggregatorAddr}:6002/
+              format: json_lines
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - ${clusterName}.${domainName}
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+        time:
+          disabled: false
+          servers:
+            - 172.16.10.254      
