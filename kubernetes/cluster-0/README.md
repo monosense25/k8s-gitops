@@ -1,10 +1,10 @@
-## INFRA Cluster
+## cluster-0
 
-Infra cluster is my home k8s cluster. All of my homeprod services run in this cluster
+cluster-0 is my homeprod cluster.
 
 ## How to bootstrap
 
-Assuming you are in the `infra` root folder:
+Assuming you are in the `cluster-0` root folder:
 
 ### Flux
 

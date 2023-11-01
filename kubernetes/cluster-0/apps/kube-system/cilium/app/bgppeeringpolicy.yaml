@@ -23,7 +23,7 @@ spec:
               values: ["will-match-and-announce-all-services"],
             }
       neighbors:
-        - peerAddress: "172.16.11.254/32" # unlike bgp-config ConfigMap, peerAddress needs to be in CIDR notation
+        - peerAddress: "172.16.10.254/32" # unlike bgp-config ConfigMap, peerAddress needs to be in CIDR notation
           peerASN: 64512
 
 ---
@@ -33,4 +33,4 @@ metadata:
   name: main-pool
 spec:
   cidrs:
-    - cidr: 10.45.0.1/16
+    - cidr: 10.11.11.1/24

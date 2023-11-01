@@ -5,13 +5,10 @@ namespace: kube-system
 resources:
   - ./helmrelease.yaml
   - ./bgppeeringpolicy.yaml
-  - ./l2announcementpolicy.yaml
 configMapGenerator:
   - name: cilium-values
     files:
       - values.yaml=./values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
 
 configurations:
   - kustomizeconfig.yaml
