@@ -40,7 +40,7 @@ spec:
       enabled: true
       ingress:
         enabled: true
-        hostname: "thanos.bjw-s.dev"
+        hostname: "thanos.monosense.io"
         ingressClassName: "internal-nginx"
         tls: true
 
