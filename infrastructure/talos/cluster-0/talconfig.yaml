@@ -29,8 +29,7 @@ nodes:
   # Thinkcentre M910q Core i7 7700t, 32GB RAM, 256GB SSD, 1x1Gbps NIC
   - hostname: k8s-m0.${domainName}
     ipAddress: 172.16.11.10
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: true
     disableSearchDomain: true
     nameservers:
@@ -45,8 +44,7 @@ nodes:
 
   - hostname: k8s-m1.${domainName}
     ipAddress: 172.16.11.11
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: true
     disableSearchDomain: true
     nameservers:
@@ -59,8 +57,7 @@ nodes:
 
   - hostname: k8s-m2.${domainName}
     ipAddress: 172.16.11.12
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: true
     disableSearchDomain: true
     nameservers:
@@ -77,13 +74,14 @@ nodes:
   # M720Q
   - hostname: k8s-w0.${domainName}
     ipAddress: 172.16.11.13
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: false
     disableSearchDomain: true
     nameservers:
       - 172.16.16.5
     networkInterfaces:
+      - interface: eth0
+        ignore: true
       - interface: bond0
         bond:
           mode: active-backup
@@ -107,13 +105,14 @@ nodes:
   #M720Q
   - hostname: k8s-w1.${domainName}
     ipAddress: 172.16.11.14
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: false
     disableSearchDomain: true
     nameservers:
       - 172.16.16.5
     networkInterfaces:
+      - interface: eth0
+        ignore: true
       - interface: bond0
         bond:
           mode: active-backup
@@ -134,13 +133,14 @@ nodes:
   # M720Q
   - hostname: k8s-w2.${domainName}
     ipAddress: 172.16.11.15
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    installDisk: /dev/sda
     controlPlane: false
     disableSearchDomain: true
     nameservers:
       - 172.16.16.5
     networkInterfaces:
+      - interface: eth0
+        ignore: true
       - interface: bond0
         bond:
           mode: active-backup
@@ -161,13 +161,14 @@ nodes:
   #M920X
   - hostname: k8s-w3.${domainName}
     ipAddress: 172.16.11.16
-    installDiskSelector:
-      busPath: /pci0000:00/0000:00:1b.4/0000:03:00.0/nvme/nvme1/nvme1n1
+    installDisk: /dev/nvme1n1
     controlPlane: false
     disableSearchDomain: true
     nameservers:
       - 172.16.16.5
     networkInterfaces:
+      - interface: eth0
+        ignore: true
       - interface: bond0
         bond:
           mode: active-backup
@@ -189,29 +190,20 @@ controlPlane:
   patches:
     - |-
       cluster:
-        apiServer:
-        controllerManager:
-          extraArgs:
-            bind-address: 0.0.0.0
-        discovery:
-          registries:
-            service:
-              disabled: true
         proxy:
           disabled: true
-        scheduler:
-          extraArgs:
-            bind-address: 0.0.0.0
         etcd:
-          extraArgs:
-            listen-metrics-urls: http://0.0.0.0:2381
+          advertisedSubnets:
+            - 172.16.11.0/24
     - |-
       machine:
+        features:
+          kubePrism:
+            enabled: true
+            port: 7445
         install:
           extraKernelArgs:
             - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
-          extensions:
-            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.4
         files:
           - op: create
             path: /etc/cri/conf.d/20-customization.part
@@ -224,12 +216,17 @@ controlPlane:
             path: /var/etv/nut/upsmon.conf
             permissions: 0o600
             content: |-
-              MONITOR ${upsmonMasterHost} 1 remote ${upsmonMasterPass} slave
+              MONITOR ${upsmonMasterHost} 1 ${upsmonMasterUser} ${upsmonMasterPass} slave
               SHUTDOWNCMD "/sbin/poweroff"
         kubelet:
           extraArgs:
             feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 172.16.11.0/24
         logging:
           destinations:
             - endpoint: udp://${vectorAggregatorAddr}:6002/
@@ -263,7 +260,7 @@ worker:
             path: /etc/cri/conf.d/20-customization.part
             op: create
           - content: |-
-              MONITOR ${upsmonWorkerHost} 1 remote ${upsmonWorkerPass} slave
+              MONITOR ${upsmonWorkerHost} 1 ${upsmonWorkerUser} ${upsmonWorkerPass} slave
               SHUTDOWNCMD "/sbin/poweroff"
             path: /var/etv/nut/upsmon.conf
             permissions: 0o600
@@ -272,14 +269,14 @@ worker:
           extraArgs:
             feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 172.16.11.0/24
         install:
           extraKernelArgs:
             - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
-          extensions:
-            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.4
-            - image: ghcr.io/siderolabs/i915-ucode:20230804
-            - image: ghcr.io/siderolabs/intel-ucode:20230808
-            - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
         logging:
           destinations:
             - endpoint: udp://${vectorAggregatorAddr}:6002/
