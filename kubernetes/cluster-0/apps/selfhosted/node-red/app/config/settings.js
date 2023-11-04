@@ -12,11 +12,11 @@ module.exports = {
         icon: "fa-cloud",
         strategy: require("passport-openidconnect").Strategy,
         options: {
-          issuer: "https://sso.monosense.io/application/o/node-red/",
+          issuer: "https://auth.monosense.io/application/o/node-red/",
           authorizationURL:
-            "https://sso.monosense.io/application/o/authorize/",
-          tokenURL: "https://sso.monosense.io/application/o/token/",
-          userInfoURL: "https://sso.monosense.io/application/o/userinfo/",
+            "https://auth.monosense.io/application/o/authorize/",
+          tokenURL: "https://auth.monosense.io/application/o/token/",
+          userInfoURL: "https://auth.monosense.io/application/o/userinfo/",
           clientID: "hN1VIEAhdR3noLaM6KLmKBYRWVsf5ywyFfh98GDV",
           clientSecret: process.env.NODE_RED_OAUTH_CLIENT_SECRET,
           callbackURL: "https://nodered.monosense.io/auth/strategy/callback",

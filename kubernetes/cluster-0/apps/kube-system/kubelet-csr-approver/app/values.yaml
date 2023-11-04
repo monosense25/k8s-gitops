@@ -1,5 +1,5 @@
 ---
 providerRegex: |
-  ^(cl0-m0||cl0-m1|cl0-m2|cl0-w0|cl0-w1|cl0-w2)$
+  ^(k8s-m0||k8s-m1|k8s-m2|k8s-w0|k8s-w1|k8s-w2|k8s-w3)$
 
 bypassDnsResolution: true

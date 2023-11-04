@@ -130,7 +130,7 @@ spec:
       auth:
         oauth_auto_login: true
         oauth_allow_insecure_email_lookup: true
-        signout_redirect_url: https://sso.monosense.io/application/o/grafana/end-session/
+        signout_redirect_url: https://auth.monosense.io/application/o/grafana/end-session/
       auth.basic:
         enabled: false
       auth.generic_oauth:
@@ -145,9 +145,9 @@ spec:
         use_pkce: true
         client_id: pe1N4ey6PAzdBbUy8RtWbOPtxpvCWUfhAGiDGuRa # TODO : Need to change this value
         client_secret: # Set by env vars
-        auth_url: https://sso.monosense.io/application/o/authorize/
-        token_url: https://sso.monosense.io/application/o/token/
-        api_url: https://sso.monosense.io/application/o/userinfo/
+        auth_url: https://auth.monosense.io/application/o/authorize/
+        token_url: https://auth.monosense.io/application/o/token/
+        api_url: https://auth.monosense.io/application/o/userinfo/
         # map user groups to Grafana roles
         role_attribute_path: |
           contains(groups[*], 'Grafana admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'

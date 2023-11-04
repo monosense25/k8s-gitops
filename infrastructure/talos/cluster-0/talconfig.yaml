@@ -1,0 +1,298 @@
+---
+clusterName: ${clusterName}
+endpoint: "https://${clusterName}.${domainName}:6443"
+
+talosVersion: v1.5.4
+kubernetesVersion: 1.28.3
+
+# Image URL rendered on https://factory.talos.dev
+# customization:
+#     extraKernelArgs:
+#         - net.ifnames=0
+#     systemExtensions:
+#         officialExtensions:
+#             - siderolabs/i915-ucode
+#             - siderolabs/intel-ucode
+#talosImageURL: factory.talos.dev/installer/22b1d04da881ef7c57edb0f24d1f3ba2c78a8e22cbe3fa9af4f42d487b2863f7
+
+cniConfig:
+  name: none
+
+additionalApiServerCertSans:
+  - ${clusterEndpointIP}
+
+additionalMachineCertSans:
+  - ${clusterEndpointIP}
+  - ${clusterName}.${domainName}
+
+nodes:
+  # Thinkcentre M910q Core i7 7700t, 32GB RAM, 256GB SSD, 1x1Gbps NIC
+  - hostname: k8s-m0.${domainName}
+    ipAddress: 172.16.11.10
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: eth0
+        dhcp: true
+        mtu: 9000
+    nodeLabels: &masterLabels
+      topology.kubernetes.io/region: ${clusterName}
+      topology.kubernetes.io/zone: k8s-master
+
+  - hostname: k8s-m1.${domainName}
+    ipAddress: 172.16.11.11
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: eth0
+        dhcp: true
+        mtu: 9000
+    nodeLabels: *masterLabels
+
+  - hostname: k8s-m2.${domainName}
+    ipAddress: 172.16.11.12
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: true
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: eth0
+        dhcp: true
+        mtu: 9000
+    nodeLabels: *masterLabels
+
+  ### Worker Node
+  ### Mixed Thinkcentre M720q & M910x
+  ### Core i7 8700t, 64GB RAM, 240GB SSD/512GB NVME (OS), 1x1TB NVME (CEPH), 2x10Gbps Mellanox ConnectX-3 Pro EN, 1x1Gbps NIC
+  # M720Q
+  - hostname: k8s-w0.${domainName}
+    ipAddress: 172.16.11.13
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:79:67:75:95 
+            - hardwareAddr: e4:1d:79:67:75:96
+        dhcp: true
+        mtu: 9000
+        vlans:
+          - vlanId: 1613
+            dhcp: false
+            addresses:
+              - 172.16.13.13/24
+            mtu: 1500
+    nodeLabels: &workerLabels
+      node-role.kubernetes.io/worker: worker
+      topology.kubernetes.io/region: ${clusterName}
+      topology.kubernetes.io/zone: k8s-worker
+
+  #M720Q
+  - hostname: k8s-w1.${domainName}
+    ipAddress: 172.16.11.14
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:85:75:d8:73
+            - hardwareAddr: e4:1d:85:75:d8:74
+        dhcp: true
+        mtu: 9000
+        vlans:
+          - vlanId: 1613
+            dhcp: false
+            addresses:
+              - 172.16.13.14/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+
+  # M720Q
+  - hostname: k8s-w2.${domainName}
+    ipAddress: 172.16.11.15
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0/
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:7a:67:a5:d4
+            - hardwareAddr: e4:1d:7a:67:a5:d5
+        dhcp: true
+        mtu: 9000
+        vlans:
+          - vlanId: 1613
+            dhcp: false
+            addresses:
+              - 172.16.13.15/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+  
+  #M920X
+  - hostname: k8s-w3.${domainName}
+    ipAddress: 172.16.11.16
+    installDiskSelector:
+      busPath: /pci0000:00/0000:00:1b.4/0000:03:00.0/nvme/nvme1/nvme1n1
+    controlPlane: false
+    disableSearchDomain: true
+    nameservers:
+      - 172.16.16.5
+    networkInterfaces:
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: ec:0d:9a:00:27:90
+            - hardwareAddr: ec:0d:9a:00:27:91
+        dhcp: true
+        mtu: 9000
+        vlans:
+          - vlanId: 1613
+            dhcp: false
+            addresses:
+              - 172.16.13.16/24
+            mtu: 1500
+    nodeLabels: *workerLabels
+
+controlPlane:
+  patches:
+    - |-
+      cluster:
+        apiServer:
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        discovery:
+          registries:
+            service:
+              disabled: true
+        proxy:
+          disabled: true
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
+        etcd:
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
+    - |-
+      machine:
+        install:
+          extraKernelArgs:
+            - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
+          extensions:
+            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.4
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+          - op: create
+            path: /var/etv/nut/upsmon.conf
+            permissions: 0o600
+            content: |-
+              MONITOR ${upsmonMasterHost} 1 remote ${upsmonMasterPass} slave
+              SHUTDOWNCMD "/sbin/poweroff"
+        kubelet:
+          extraArgs:
+            feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
+            rotate-server-certificates: "true"
+        logging:
+          destinations:
+            - endpoint: udp://${vectorAggregatorAddr}:6002/
+              format: json_lines
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - ${clusterName}.${domainName}
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+        time:
+          disabled: false
+          servers:
+            - 172.16.10.254
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+worker:
+  patches:
+    - |-
+      machine:
+        files:
+          - content: |
+              [plugins]
+                [plugins."io.containerd.grpc.v1.cri"]
+                  enable_unprivileged_ports = true
+                  enable_unprivileged_icmp = true
+            path: /etc/cri/conf.d/20-customization.part
+            op: create
+          - content: |-
+              MONITOR ${upsmonWorkerHost} 1 remote ${upsmonWorkerPass} slave
+              SHUTDOWNCMD "/sbin/poweroff"
+            path: /var/etv/nut/upsmon.conf
+            permissions: 0o600
+            op: create
+        kubelet:
+          extraArgs:
+            feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
+            rotate-server-certificates: "true"
+        install:
+          extraKernelArgs:
+            - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
+          extensions:
+            - image: ghcr.io/siderolabs/nut-client:2.8.0-v1.5.4
+            - image: ghcr.io/siderolabs/i915-ucode:20230804
+            - image: ghcr.io/siderolabs/intel-ucode:20230808
+            - image: ghcr.io/siderolabs/iscsi-tools:v0.1.4
+        logging:
+          destinations:
+            - endpoint: udp://${vectorAggregatorAddr}:6002/
+              format: json_lines
+        network:
+          extraHostEntries:
+            - ip: ${clusterEndpointIP}
+              aliases:
+                - ${clusterName}.${domainName}
+        sysctls:
+          fs.inotify.max_user_watches: "1048576"
+          fs.inotify.max_user_instances: "8192"
+        time:
+          disabled: false
+          servers:
+            - 172.16.10.254      

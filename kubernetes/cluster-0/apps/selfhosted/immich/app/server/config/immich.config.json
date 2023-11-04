@@ -66,7 +66,7 @@
     },
     "oauth": {
       "enabled": true,
-      "issuerUrl": "https://sso.monosense.io/application/o/immich/.well-known/openid-configuration",
+      "issuerUrl": "https://auth.monosense.io/application/o/immich/.well-known/openid-configuration",
       "clientId": "2IRlm86dUNVg0zZApYvZ12DWmKqnfEauptltfdNB",
       "clientSecret": "{{ .authentik_immich_oauth_client_secret }}",
       "mobileOverrideEnabled": false,
