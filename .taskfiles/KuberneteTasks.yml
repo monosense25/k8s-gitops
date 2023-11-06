@@ -1,0 +1,98 @@
+---
+version: "3"
+
+tasks:
+  bootstrap:
+    desc: Bootstrap Cluster and have flux manage its state
+    cmds:
+      - flux check --pre
+      - kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+      - kubectl apply --server-side --kustomize ./kubernetes/bootstrap/flux
+      - sops --decrypt kubernetes/bootstrap/flux/age-key.sops.yaml | kubectl apply -f -
+      - kubectl apply -f kubernetes/flux/vars/cluster-settings.yaml
+      - kubectl apply --server-side --kustomize ./kubernetes/flux/config
+
+  hr:restart:
+    desc: Restart all failed Helm Releases
+    cmds:
+      - kubectl get hr --all-namespaces | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux suspend hr $0 -n $1'
+      - kubectl get hr --all-namespaces | grep False | awk '{print $2, $1}' | xargs -l bash -c 'flux resume hr $0 -n $1 &'
+
+  list-dockerhub:
+    desc: What dockerhub images are running in my cluster
+    cmds:
+      - kubectl get pods --all-namespaces -o=jsonpath="{range .items[*]}{'\n'}{range .spec.containers[*]}{.image}{'\n'}{end}{end}" | sort | uniq | grep -Ev 'quay|gcr|ghcr|ecr|us-docker' | grep -Ev 'bitnami|rook|intel|grafana' |  sed -e 's/docker\.io\///g' | sort | uniq
+
+  reconcile:
+    desc: Force update Flux to pull in changes from your Git repository
+    cmds:
+      - flux reconcile source git home-ops-kubernetes {{.CLI_ARGS | default "-n flux-system"}}
+
+  delete-failed-pods:
+    desc: Deletes failed pods
+    cmds:
+      - kubectl delete pods --field-selector status.phase=Failed -A --ignore-not-found=true
+
+  volume:
+    desc: |-
+      Create a container for debugging a PVC (ex. task PVC=plex-config-v1 kube:volume)
+    interactive: true
+    cmds:
+      - |
+        kubectl run -n $(kubectl get pvc -A | grep {{.PVC}} | awk '{print $1}') debug-{{.PVC}} -i --tty --rm --image=null --privileged --overrides='
+          {
+            "apiVersion": "v1",
+            "spec": {
+              "containers": [
+                {
+                  "name": "debug",
+                  "image": "ghcr.io/onedr0p/alpine:rolling",
+                  "command": [
+                    "/bin/bash"
+                  ],
+                  "stdin": true,
+                  "stdinOnce": true,
+                  "tty": true,
+                  "volumeMounts": [
+                    {
+                      "name": "nas",
+                      "mountPath": "/data/nas"
+                    },
+                    {
+                      "name": "config",
+                      "mountPath": "/data/config"
+                    }
+                  ]
+                }
+              ],
+              "volumes": [
+                {
+                  "name": "nas",
+                  "nfs": {
+                    "server": "{{.NAS_ADDR | default "192.168.1.128"}}",
+                    "path": "{{.NAS_PATH | default "/volume1"}}"
+                  }
+                },
+                {
+                  "name": "config",
+                  "persistentVolumeClaim": {
+                    "claimName": "{{.PVC}}"
+                  }
+                }
+              ],
+              "restartPolicy": "Never"
+            }
+          }'
+
+  hr-suspend:
+    desc: Suspend all Flux HelmReleases
+    cmds:
+      - |
+        flux get helmrelease --all-namespaces --no-header | awk '{print $1, $2}' \
+          | xargs -l bash -c 'flux -n $0 suspend helmrelease $1'
+  hr-resume:
+    desc: Resume all Flux HelmReleases
+    cmds:
+      - |
+        flux get helmrelease --all-namespaces --no-header | awk '{print $1, $2}' \
+          | xargs -l bash -c 'flux -n $0 resume helmrelease $1'

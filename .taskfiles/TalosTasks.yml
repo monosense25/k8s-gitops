@@ -1,0 +1,101 @@
+---
+version: "3"
+
+vars:
+  N: '{{ .N | default "0" }}'
+  NODE:
+    sh: 'echo ${NODE:-192.168.1.20{{ .N }}}'
+  # renovate: datasource=github-releases depName=siderolabs/talos
+  TALOS_VERSION: "v1.5.4"
+  # renovate: datasource=github-releases depName=budimanjojo/talhelper
+  TALHELPER_VERSION: "v1.14.0"
+  # renovate: datasource=github-releases depName=siderolabs/kubelet
+  KUBERNETES_VERSION: "v1.28.3"
+
+tasks:
+
+  init:
+    desc: Init talosctl and grab kubeconfig (task talos:init)
+    cmds:
+      - mkdir config || true
+      - sudo curl -Lo /usr/local/bin/talosctl https://github.com/siderolabs/talos/releases/download/{{.TALOS_VERSION}}/talosctl-$(uname -s | tr "[:upper:]" "[:lower:]")-$(uname -m) && sudo chmod +x /usr/local/bin/talosctl
+      - curl -Lo /tmp/talhelper-{{.TALHELPER_VERSION}}.tar.gz https://github.com/budimanjojo/talhelper/releases/download/{{.TALHELPER_VERSION}}/talhelper_$(uname -s | tr "[:upper:]" "[:lower:]")_$(uname -m).tar.gz && tar -xzf /tmp/talhelper-{{.TALHELPER_VERSION}}.tar.gz -C /tmp && sudo mv /tmp/talhelper /usr/local/bin/talhelper
+      - task: generate
+      - talosctl --talosconfig=talos/clusterconfig/talosconfig kubeconfig --nodes 192.168.1.200 $KUBECONFIG
+
+  install:cni:
+    desc: Install CNI and cert approver helm releases (task talos:cni)
+    cmds:
+      - kubectl kustomize talos --enable-helm --load-restrictor LoadRestrictionsNone | kubectl apply -f -
+
+  upgrade:k8s:
+    dir: talos
+    desc: Upgrade Kubernetes to {{ .KUBERNETES_VERSION }} (task talos:upgrade:k8s)
+    cmds:
+      - talosctl --nodes 192.168.1.200 upgrade-k8s --to {{ .KUBERNETES_VERSION }}
+
+  upgrade:all:
+    desc: Upgrade all nodes to Talos version {{ .TALOS_VERSION }} (task talos:upgrade:all [SKIP_APPLY=1])
+    dir: talos
+    cmds:
+      - task: generate
+      - for: [3, 1, 0, 2, 4, 5]
+        task: upgrade
+        vars:
+          NODE: 'k8s-{{ .ITEM }}'
+          N: '{{ .ITEM }}'
+      # Restart nginx, sometimes it has issues...
+      - kubectl -n networking rollout restart deployment nginx-internal-controller
+      - kubectl -n networking rollout restart deployment nginx-external-controller
+
+  apply:
+    desc: Apply Talos config to a specific node (task talos:apply N=0)
+    dir: talos
+    status:
+      - test -n "{{ .SKIP_APPLY }}"
+    cmds:
+      - task: generate
+      - talosctl apply-config --nodes {{ .NODE }} --file clusterconfig/home-cluster-k8s-{{ .N }}.yaml {{ .CLI_ARGS }}
+
+  generate:
+    desc: Generate Talos machine configurations (task talos:generate)
+    dir: talos
+    cmds:
+      - talhelper genconfig --env-file talenv.sops.yaml --secret-file talsecret.sops.yaml --config-file talconfig.yaml
+    sources:
+      - talconfig.yaml
+      - talenv.sops.yaml
+      - talenv.yaml
+      - talsecret.sops.yaml
+    generates:
+      - clusterconfig/*.yaml
+      - clusterconfig/talosconfig
+
+  version:
+    desc: Apply Talos config to a specific node (task talos:version [N=0])
+    dir: talos
+    cmds:
+      - for: [0, 1, 2, 3, 4, 5]
+        cmd: talosctl version --nodes 192.168.1.20{{ .ITEM }} --short
+
+  upgrade:
+    internal: True
+    desc: Upgrade a single node to Talos version {{ .TALOS_VERSION }} (task talos:upgrade N=0 [SKIP_APPLY=1])
+    dir: talos
+    status:
+      - talosctl version --nodes {{ .NODE }} --short | grep 'Tag.*{{ .TALOS_VERSION }}'
+    cmds:
+      - task: wait_for_health
+        vars: {TIMEOUT: 10m}
+      - task: apply
+        vars: {NODE: "{{ .NODE }}", N: "{{ .N }}", CLI_ARGS: "-m staged", SKIP_APPLY: "{{ .SKIP_APPLY }}"}
+      - talosctl upgrade --nodes {{ .NODE }} --image ghcr.io/siderolabs/installer:{{ .TALOS_VERSION }} --preserve
+
+  wait_for_health:
+    internal: True
+    desc: Wait for services in cluster to be healthy
+    cmds:
+      # Ensure CephCluster is healthy
+      - kubectl -n rook-ceph wait --for jsonpath='{.status.ceph.health}'='HEALTH_OK' --timeout {{ .TIMEOUT | default "30s" }} cephcluster rook-ceph
+      # Ensure CloudNative-PG cluster has 3 ready instances
+      - kubectl wait --for jsonpath='{.status.readyInstances}'='3' --timeout {{ .TIMEOUT | default "30s" }} cluster postgres

@@ -35,9 +35,9 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0
+      - interface: enp0s31f6
         dhcp: true
-        mtu: 1500
+        mtu: 9000
     nodeLabels: &masterLabels
       topology.kubernetes.io/region: ${clusterName}
       topology.kubernetes.io/zone: k8s-master
@@ -50,9 +50,9 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0
+      - interface: enp0s31f6
         dhcp: true
-        mtu: 1500
+        mtu: 9000
     nodeLabels: *masterLabels
 
   - hostname: k8s-m2.${domainName}
@@ -63,9 +63,9 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0
+      - interface: enp0s31f6
         dhcp: true
-        mtu: 1500
+        mtu: 9000
     nodeLabels: *masterLabels
 
   ### Worker Node
@@ -80,28 +80,27 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0 
+      - interface: eno1 
         ignore: true
-      # - interface: bond0
-      #   bond:
-      #     mode: active-backup
-      #     miimon: 100
-      #     deviceSelectors:
-      #       - hardwareAddr: e4:1d:79:67:75:95 
-      #       - hardwareAddr: e4:1d:79:67:75:96
-      - interface: eth1
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:79:67:75:95 
+            - hardwareAddr: e4:1d:79:67:75:96
         dhcp: true
-        mtu: 1500
+        mtu: 9000
         vlans:
           - vlanId: 1613
             dhcp: false
             addresses:
               - 172.16.13.13/24
             mtu: 1500
-    # nodeLabels: &workerLabels
-    #   node-role.kubernetes.io/worker: worker
-    #   topology.kubernetes.io/region: ${clusterName}
-    #   topology.kubernetes.io/zone: k8s-worker
+    nodeLabels: &workerLabels
+      node-role.kubernetes.io/worker: worker
+      topology.kubernetes.io/region: ${clusterName}
+      topology.kubernetes.io/zone: k8s-worker
 
   #M720Q
   - hostname: k8s-w1.${domainName}
@@ -112,25 +111,24 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0 
+      - interface: eno1 
         ignore: true
-      # - interface: bond0
-      #   bond:
-      #     mode: active-backup
-      #     miimon: 100
-      #     deviceSelectors:
-      #       - hardwareAddr: e4:1d:85:75:d8:73
-      #       - hardwareAddr: e4:1d:85:75:d8:74
-      - interface: eth1
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:85:75:d8:73
+            - hardwareAddr: e4:1d:85:75:d8:74
         dhcp: true
-        mtu: 1500
+        mtu: 9000
         vlans:
           - vlanId: 1613
             dhcp: false
             addresses:
               - 172.16.13.14/24
             mtu: 1500
-    # nodeLabels: *workerLabels
+    nodeLabels: *workerLabels
 
   # M720Q
   - hostname: k8s-w2.${domainName}
@@ -141,25 +139,24 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0 
+      - interface: eno1 
         ignore: true
-      # - interface: bond0
-      #   bond:
-      #     mode: active-backup
-      #     miimon: 100
-      #     deviceSelectors:
-      #       - hardwareAddr: e4:1d:7a:67:a5:d4
-      #       - hardwareAddr: e4:1d:7a:67:a5:d5
-      - interface: eth1
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: e4:1d:7a:67:a5:d4
+            - hardwareAddr: e4:1d:7a:67:a5:d5
         dhcp: true
-        mtu: 1500
+        mtu: 9000
         vlans:
           - vlanId: 1613
             dhcp: false
             addresses:
               - 172.16.13.15/24
             mtu: 1500
-    # nodeLabels: *workerLabels
+    nodeLabels: *workerLabels
   
   #M920X
   - hostname: k8s-w3.${domainName}
@@ -170,27 +167,24 @@ nodes:
     nameservers:
       - 172.16.16.5
     networkInterfaces:
-      - interface: eth0
+      - interface: eno1
         ignore: true
-      # - interface: bond0
-      #   bond:
-      #     mode: active-backup
-      #     miimon: 100
-      #     deviceSelectors:
-      #       - hardwareAddr: ec:0d:9a:00:27:90
-      #       - hardwareAddr: ec:0d:9a:00:27:91
-      #   dhcp: true
-      #   mtu: 1500
-      - interface: eth1
+      - interface: bond0
+        bond:
+          mode: active-backup
+          miimon: 100
+          deviceSelectors:
+            - hardwareAddr: ec:0d:9a:00:27:90
+            - hardwareAddr: ec:0d:9a:00:27:91
         dhcp: true
-        mtu: 1500
+        mtu: 9000
         vlans:
           - vlanId: 1613
             dhcp: false
             addresses:
               - 172.16.13.16/24
             mtu: 1500
-    # nodeLabels: *workerLabels
+    nodeLabels: *workerLabels
 
 controlPlane:
   patches:
@@ -209,7 +203,6 @@ controlPlane:
             port: 7445
         install:
           extraKernelArgs:
-            - net.ifnames=0
             - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
         files:
           - op: create
@@ -229,6 +222,11 @@ controlPlane:
           extraArgs:
             feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 172.16.11.0/24
         logging:
           destinations:
             - endpoint: udp://${vectorAggregatorAddr}:6002/
@@ -253,10 +251,6 @@ worker:
   patches:
     - |-
       machine:
-        features:
-          kubePrism:
-            enabled: true
-            port: 7445
         files:
           - content: |
               [plugins]
@@ -275,9 +269,13 @@ worker:
           extraArgs:
             feature-gates: CronJobTimeZone=true,GracefulNodeShutdown=true,NewVolumeManagerReconstruction=false
             rotate-server-certificates: "true"
+          extraConfig:
+            maxPods: 150
+          nodeIP:
+            validSubnets:
+                - 172.16.11.0/24
         install:
           extraKernelArgs:
-            - net.ifnames=0
             - talos.logging.kernel=udp://${vectorAggregatorAddr}:6001/
         logging:
           destinations:
