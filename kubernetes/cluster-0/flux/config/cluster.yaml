@@ -9,7 +9,7 @@ spec:
   interval: 30m
   ref:
     branch: main
-  url: https://github.com/monosense-25/k8s-gitops.git
+  url: https://github.com/monosense25/k8s-gitops.git
   ignore: |
     # exclude all
     /*
