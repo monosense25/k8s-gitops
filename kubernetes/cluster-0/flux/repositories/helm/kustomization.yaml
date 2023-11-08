@@ -11,7 +11,7 @@ resources:
   - crunchydata.yaml
   - democratic-csi.yaml
   - external-secrets.yaml
-  - ext-postgres-operator.yaml
+  # - ext-postgres-operator.yaml
   - grafana.yaml
   - ingress-nginx.yaml
   - intel.yaml
