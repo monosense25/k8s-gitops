@@ -5,17 +5,8 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  # - ./actual/ks.yaml
-  - ./atuin/ks.yaml
-  - ./immich/ks.yaml
-  # - ./linkding/ks.yaml
-  # - ./miniflux/ks.yaml
-  # - ./mealie/ks.yaml
-  - ./node-red/ks.yaml
-  # - ./obsidian-couchdb/ks.yaml
-  - ./paperless/ks.yaml
-  # - ./radicale/ks.yaml
-  # - ./spoolman/ks.yaml
-  # - ./thelounge/ks.yaml
-  # - ./wallabag/ks.yaml
-  - ./zipline/ks.yaml
+  # - ./atuin/ks.yaml
+  # - ./immich/ks.yaml
+  # - ./node-red/ks.yaml
+  # - ./paperless/ks.yaml
+  # - ./zipline/ks.yaml
