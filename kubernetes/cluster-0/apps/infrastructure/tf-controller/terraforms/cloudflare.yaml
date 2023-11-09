@@ -32,7 +32,7 @@ spec:
     spec:
       env:
         - name: OP_CONNECT_HOST
-          value: http://onepassword-connect.monosense.io.dev:8080
+          value: http://onepassword-connect.monosense.io:8080
         - name: OP_CONNECT_TOKEN
           valueFrom:
             secretKeyRef:

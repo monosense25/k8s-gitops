@@ -69,7 +69,7 @@ spec:
         #   memory: 270M
       persistence:
         enabled: true
-        storageClass: "local-hostpath"
+        storageClass: "ceph-block"
         size: 15Gi
 
     storegateway:
@@ -82,7 +82,7 @@ spec:
         #   memory: 226M
       persistence:
         enabled: true
-        storageClass: "local-hostpath"
+        storageClass: "ceph-block"
         size: 1Gi
 
     ruler:
@@ -100,7 +100,7 @@ spec:
         enabled: true
       persistence:
         enabled: true
-        storageClass: "local-hostpath"
+        storageClass: "ceph-block"
         size: 512Mi
       resources:
         requests:

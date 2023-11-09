@@ -7,6 +7,6 @@ resources:
   # Flux-Kustomizations
   - ./atuin/ks.yaml
   # - ./immich/ks.yaml
-  - ./node-red/ks.yaml
+  # - ./node-red/ks.yaml
   - ./paperless/ks.yaml
-  - ./zipline/ks.yaml
+  # - ./zipline/ks.yaml

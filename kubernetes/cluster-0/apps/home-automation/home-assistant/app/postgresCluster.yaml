@@ -19,8 +19,8 @@ spec:
         name: repo1
         s3:
           bucket: "crunchy-postgres"
-          endpoint: "s3.monosense.io"
-          region: "us-east-1"
+          endpoint: "s3.monosense.io:9000"
+          region: "dpkptr-south-rack1"
   patroni:
     dynamicConfiguration:
       synchronous_mode: true
@@ -30,7 +30,7 @@ spec:
     - name: postgres
       replicas: 2
       dataVolumeClaimSpec:
-        storageClassName: local-hostpath
+        storageClassName: ceph-block
         accessModes:
           - ReadWriteOnce
         resources:
@@ -63,5 +63,5 @@ spec:
             differential: "0 1 * * 1-6"
           s3:
             bucket: "crunchy-postgres"
-            endpoint: "s3.monosense.io"
-            region: "us-east-1"
+            endpoint: "s3.monosense.io:9000"
+            region: "dpkptr-south-rack1"

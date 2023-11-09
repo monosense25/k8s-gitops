@@ -151,7 +151,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       persistence:
         size: 20Gi
-        storageClass: truenas-iscsi
+        storageClass: ceph-block
 
     read:
       replicas: 3
@@ -178,7 +178,7 @@ spec:
                 topologyKey: kubernetes.io/hostname
       persistence:
         size: 20Gi
-        storageClass: truenas-iscsi
+        storageClass: ceph-block
 
     monitoring:
       dashboards:

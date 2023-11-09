@@ -12,7 +12,7 @@ spec:
       "plugins": [
         {
           "type": "macvlan",
-          "master": "bond0.1613",
+          "master": "eth1.1613",
           "mode": "bridge",
           "capabilities": {
             "ips": true

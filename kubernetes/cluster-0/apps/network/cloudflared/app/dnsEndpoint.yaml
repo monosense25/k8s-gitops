@@ -8,4 +8,4 @@ spec:
   endpoints:
     - dnsName: ingress-ext.monosense.io
       recordType: CNAME
-      targets: ["4bfe213a-d05d-4bab-a568-784d4d9be4dd.cfargotunnel.com"]
+      targets: ["853db751-b964-4d93-8b17-fb2e03941c91.cfargotunnel.com"]
