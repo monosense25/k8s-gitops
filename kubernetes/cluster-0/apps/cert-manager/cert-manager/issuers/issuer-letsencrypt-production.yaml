@@ -5,7 +5,7 @@ metadata:
   name: letsencrypt-production
 spec:
   acme:
-    email: info@monosense.io
+    email: eko.purwanto@monosense.io
     preferredChain: ""
     privateKeySecretRef:
       name: letsencrypt-production
