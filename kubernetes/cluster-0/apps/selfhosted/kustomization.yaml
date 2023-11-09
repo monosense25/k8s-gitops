@@ -5,8 +5,8 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  # - ./atuin/ks.yaml
+  - ./atuin/ks.yaml
   # - ./immich/ks.yaml
-  # - ./node-red/ks.yaml
-  # - ./paperless/ks.yaml
-  # - ./zipline/ks.yaml
+  - ./node-red/ks.yaml
+  - ./paperless/ks.yaml
+  - ./zipline/ks.yaml
