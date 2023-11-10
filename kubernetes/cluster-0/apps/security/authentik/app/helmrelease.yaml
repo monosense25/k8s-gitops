@@ -30,7 +30,7 @@ spec:
         send_pii: false
       redis:
         host: "authentik-redis.security.svc.cluster.local"
-        password: ""
+        password: "sq6eZTGhF3seHTqM9KKt"
 
     envValueFrom:
       AUTHENTIK_SECRET_KEY:
