@@ -29,7 +29,8 @@ spec:
       enabled: true
 
     extraArgs:
-      - --dns01-recursive-nameservers=203.142.82.222:53,203.142.84.222:53
+      # - --dns01-recursive-nameservers=203.142.82.222:53,203.142.84.222:53
+      - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
       - --dns01-recursive-nameservers-only
       - --enable-certificate-owner-ref
 
@@ -38,5 +39,5 @@ spec:
     podDnsPolicy: "None"
     podDnsConfig:
       nameservers:
-        - "203.142.82.222"
-        - "203.142.84.222"
+        - "1.1.1.1"
+        - "9.9.9.9"
