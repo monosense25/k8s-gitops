@@ -2,7 +2,7 @@
 clusterName: ${clusterName}
 endpoint: "https://${clusterName}.${domainName}:6443"
 
-talosVersion: v1.5.4
+talosVersion: v1.5.5
 kubernetesVersion: 1.28.3
 
 # Image URL rendered on https://factory.talos.dev
@@ -191,6 +191,11 @@ nodes:
               - 172.16.13.16/24
             mtu: 1500
     # nodeLabels: *workerLabels
+patches:
+  - |-
+    machine:
+      install:
+        image: ghcr.io/trosvald/installer-worker:v1.5.5
 
 controlPlane:
   patches:
